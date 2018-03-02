@@ -7,9 +7,9 @@ import com.study.domain.BoardListVO;
 
 public interface BoardDAO {
 	
-	public List<BoardListVO> listAll(); //모든 데이터 조회
-	public BoardListVO list(int no); // 특정 게시글 조회
-	public int listCreate(BoardListVO vo); //게시글 등록
-	public int listDelete(int no);//게시글 삭제
+	public List<BoardListVO> listAll(); //紐⑤뱺 �뜲�씠�꽣 議고쉶
+	public BoardListVO list(int no); // �듅�젙 寃뚯떆湲� 議고쉶
+	public int listCreate(BoardListVO vo); //寃뚯떆湲� �벑濡�
+	public int listDelete(int no);//寃뚯떆湲� �궘�젣
 	
 }
