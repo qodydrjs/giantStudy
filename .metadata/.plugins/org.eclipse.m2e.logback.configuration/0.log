@@ -1,0 +1,5 @@
+2018-03-02 10:28:11,640 [Worker-7] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.study:work:1.0.0-BUILD-SNAPSHOT @ C:\work\git\giantStudy\ccprea\ccprea\ccprea\pom.xml.
+2018-03-02 10:28:24,280 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+2018-03-02 10:28:24,291 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 3 resources
+2018-03-02 10:28:24,309 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (MS949 actually) to copy filtered resources, i.e. build is platform dependent!
+2018-03-02 10:28:24,311 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
