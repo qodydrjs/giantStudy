@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.domain.BoardListVO;
 import com.study.service.BoardService;
@@ -79,17 +80,17 @@ public class StudyController {
 	}
 	
 	@RequestMapping(value="/listDelete", method=RequestMethod.POST)
-	public String listDelete(int no, Model model)throws Exception {
+	public String listDelete(int no, RedirectAttributes rttr)throws Exception {
 		
 		int chekc = service.listDelete(no);
 		
 		if(chekc ==1){
-			model.addAttribute("msg", "성공");
+			rttr.addFlashAttribute("msg", "SUCCESS")
 			
 			return "redirect:/listAll";
 		}else{
 			
-			model.addAttribute("msg", "싪패");
+			rttr.addFlashAttribute("msg", "FAILED");
 			
 			return "redirect:/listAll";
 		}
