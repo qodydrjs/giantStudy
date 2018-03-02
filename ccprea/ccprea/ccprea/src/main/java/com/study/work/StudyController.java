@@ -62,18 +62,18 @@ public class StudyController {
 	}
 	
 	@RequestMapping(value="/listCreate" , method=RequestMethod.POST)
-	public String listCreatePost(@ModelAttribute BoardListVO vo, Model model) throws Exception {
+	public String listCreatePost(@ModelAttribute BoardListVO vo, RedirectAttributes rttr) throws Exception {
 
 
 		int chekc = service.listCtrate(vo);
 		
 		if(chekc ==1){
-			model.addAttribute("msg", "성공");
+			rttr.addFlashAttribute("msg", "SUCCESS");
 			
 			return "redirect:/listAll";
 		}else{
 			
-			model.addAttribute("msg", "싪패");
+			rttr.addFlashAttribute("msg", "FAILED");
 			
 			return "redirect:/listCreate";
 		}
@@ -85,7 +85,7 @@ public class StudyController {
 		int chekc = service.listDelete(no);
 		
 		if(chekc ==1){
-			rttr.addFlashAttribute("msg", "SUCCESS")
+			rttr.addFlashAttribute("msg", "SUCCESS");
 			
 			return "redirect:/listAll";
 		}else{
