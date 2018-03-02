@@ -31,15 +31,15 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void listCtrate(BoardListVO vo) throws Exception {
+	public int listCtrate(BoardListVO vo) throws Exception {
 		// TODO Auto-generated method stub
-		dao.listCreate(vo);
+		return dao.listCreate(vo);
 	}
 
 	@Override
-	public void listDelete(int no) throws Exception {
+	public int listDelete(int no) throws Exception {
 		// TODO Auto-generated method stub
-		dao.listDelete(no);
+		return dao.listDelete(no);
 		
 	}
 

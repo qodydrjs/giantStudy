@@ -13,6 +13,13 @@
 
 <script type="text/javascript">
 
+	$(document).ready(function(){
+
+		
+		
+	});
+	
+
 	function createList(){
 		
 		location.href="/listCreate"

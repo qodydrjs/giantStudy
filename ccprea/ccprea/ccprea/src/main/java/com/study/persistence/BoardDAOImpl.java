@@ -36,16 +36,16 @@ public class BoardDAOImpl implements BoardDAO {
 
 
 	@Override
-	public void listCreate(BoardListVO vo) {
+	public int listCreate(BoardListVO vo) {
 		// TODO Auto-generated method stub
-		 session.insert(namespace+".listCreate",vo);
+		 return session.insert(namespace+".listCreate",vo);
 	}
 
 
 	@Override
-	public void listDelete(int no) {
+	public int listDelete(int no) {
 		// TODO Auto-generated method stub
-		session.delete(namespace+".listDelete", no);
+		return session.delete(namespace+".listDelete", no);
 	}
 	
 	
