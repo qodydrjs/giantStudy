@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.mapper">
+     
+    <select id="listAll" resultType="com.study.domain.BoardListVO" >
+        <![CDATA[
+            select 
+             seq,
+            mem_id,
+         	mem_name,
+         	board_subject,
+         	board_content,
+         	reg_date,
+         	upt_date,
+         	view_cnt
+            from
+            board_study
+            where seq > 0
+            order by seq desc
+        ]]>
+    </select>
+    
+    <select id="list" resultType="com.study.domain.BoardListVO">
+    
+    	select * from board_study where seq = #{no}
+    
+    </select>
+    
+    <insert id="listCreate">
+    
+    	insert into board_study 
+    	(seq,mem_id,mem_name,board_subject,board_content,reg_date)
+    	values((select nvl(MAX(seq)+1,0) from board_study),
+    	  #{mem_id},
+    	  #{mem_name},
+    	  #{board_subject},
+    	  #{board_content},
+    	  (select SYSDATE from SYS.DUAL)
+    	)
+    
+    </insert>
+    
+    <delete id="listDelete">
+    	
+    	delete from board_study
+    	where seq = #{no}
+    
+    </delete>
+     
+</mapper>
+
