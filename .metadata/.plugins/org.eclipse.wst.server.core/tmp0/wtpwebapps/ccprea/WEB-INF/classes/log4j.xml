@@ -18,7 +18,7 @@
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
-	</logger>
+	</logger>	
 	
 	<logger name="org.springframework.beans">
 		<level value="info" />
@@ -32,25 +32,10 @@
 		<level value="info" />
 	</logger>
 
-
-	<logger name="java.sql">
-		<level value="DEBUG"></level>
-		<appender-ref ref="console" />
-	</logger>
-
 	<!-- Root Logger -->
 	<root>
-		<priority value="DEBUG" />
+		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
-
-	<!-- Root Logger 
-	<root>
-		<priority value="warn" />
-		<appender-ref ref="console" />
-	</root>
-	-->
-	
-	
 	
 </log4j:configuration>

@@ -11,17 +11,26 @@
 
 
 	function delList(){
-
-		$('#del').submit();
+		
+		$('#frm').attr("action","/listDelete");
+		$('#frm').attr("method","post");
+		$('#frm').submit();
 
 	}
 	
 	function listview(){
+		
+		
+		
 		location.href="/listAll";
 	}
 	
 	function listUpdate(){
-		location.href="/listUpdate";
+		
+		$('#frm').attr("action","/listUpdate");
+		$('#frm').attr("method","post");
+		$('#frm').submit();
+
 	}
 
 </script>
@@ -30,18 +39,25 @@
 </head>
 <body>
 
-		<form id="del" name="del" action="/listDelete" method="POST">
+		<form id="frm" name="frm">
 		
 		<input type="hidden" id="no" name="no" value="${list.seq }">
 		
 		</form> 
-		${list.mem_id }
+		<label for="mem_id">아이디 : </label>
+		<input type="text" id='mem_id' name='mem_id' value= '${list.mem_id }' >
 		<br>
-		${list.mem_name }
+		<label for="mem_name">이름 : </label>
+		<input type="text" id='mem_name' name='mem_name' value='${list.mem_name }'>
 		<br>
-		${list.board_subject }
+		<label for="board_subject">제목 : </label>
+		<input type="text" id='board_subject' name='board_subject' value='${list.board_subject }'>
 		<br>
-		${list.board_content }
+		<label for="board_content">내용 : </label>
+		<textarea rows="5" cols="20" id="board_content" name="board_content">
+			${list.board_content }
+		</textarea>
+		
 		<br>
 		
 		<input type="button" id="list" name="list" value="목록" onclick="listview()">

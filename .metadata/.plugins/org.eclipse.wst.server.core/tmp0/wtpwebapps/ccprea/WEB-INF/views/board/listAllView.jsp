@@ -20,7 +20,7 @@
 		
 		if(result == 'SUCCESS'){
 			alert("처리가 완료되었습니다.");
-		}else{
+		}else if(result == 'FAILED'){
 			alert("처리가 실패되었습니다.");
 		}
 		
