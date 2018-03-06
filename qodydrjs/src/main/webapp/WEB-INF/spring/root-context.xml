@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+		<bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<constructor-arg>
+				<value>
+					jdbc:mysql://127.0.0.1/book_ex?useSSL=false&amp;serverTimezone=Asia/Seoul
+				</value>
+			</constructor-arg>
+			<constructor-arg>
+				<value>zerock</value>
+			</constructor-arg>
+			<constructor-arg>
+				<value>zerock</value>
+			</constructor-arg>
+			<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		</bean>
+		
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="datasource"></property>
+			<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+			<property name="mapperLocations" value="classpath:/**/*Mapper.xml"></property>
+		</bean>
+		
+		<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+			<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+		</bean>
+		
+		<context:component-scan base-package="com.qodydrjs.*" />
+		
+</beans>

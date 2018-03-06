@@ -22,6 +22,13 @@ public class BoardDAOImpl implements BoardDAO {
 
 
 	@Override
+	public int listModify(BoardListVO vo) {
+		// TODO Auto-generated method stub
+		return session.update(namespace+".listModify", vo);
+	}
+
+
+	@Override
 	public List<BoardListVO> listAll() {
 		// TODO Auto-generated method stub
 		return session.selectList(namespace+".listAll");
@@ -46,6 +53,13 @@ public class BoardDAOImpl implements BoardDAO {
 	public int listDelete(int no) {
 		// TODO Auto-generated method stub
 		return session.delete(namespace+".listDelete", no);
+	}
+
+
+	@Override
+	public int listTotalCount() {
+		// TODO Auto-generated method stub
+		return session.selectOne(namespace+".listTotalCount");
 	}
 	
 	
