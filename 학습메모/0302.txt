@@ -1,0 +1,25 @@
+
+
+
+VO (M) Data와 연결
+
+	BoardVO
+
+
+DAO (C) - Mybatis Mapper 와 연결
+	
+	BoardDAO
+	BoardDAOImpl @Reoposit(id="BoardDAO")
+
+Service (M) -비즈니스 로직 구현
+
+	BoardService
+	BoardServiceImple @Service(id="BoardService")
+
+Controller (C) -View 연결 
+
+	BoardController @Cotroller
+
+Mapper (C) -Jdbc와 연결
+
+	BoardMapper.xml
