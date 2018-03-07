@@ -64,6 +64,29 @@
     	select count(*) from board_study_bak
     
     </select>
+    
+    
+    <select id="listSearch" parameterType="hashmap" resultType="com.study.domain.BoardListVO">
+    	
+    	select * 
+    	
+    	from board_study_bak
+    	where 1=1
+    	<if test='combobox.equals("작성자")'>
+    	AND mem_name like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='combobox.equals("제목")'>
+    	AND board_subject like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='combobox.equals("제목+내용")'>
+    	AND board_content like '%'|| #{serch_text} || '%'
+		OR board_subject like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='sdate!="" and edate!="" '>
+       AND reg_date BETWEEN #{sdate} AND #{edate}
+       </if>
+    
+    </select>
      
 </mapper>
 

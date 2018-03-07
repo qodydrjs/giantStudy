@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.study.mapper.mapper">
      
+     
+     
     <select id="listAll" resultType="com.study.domain.BoardListVO" >
         <![CDATA[
             select 
@@ -14,7 +16,7 @@
          	upt_date,
          	view_cnt
             from
-            board_study
+            board_study_bak
             where seq > 0
             order by seq desc
         ]]>
@@ -22,30 +24,69 @@
     
     <select id="list" resultType="com.study.domain.BoardListVO">
     
-    	select * from board_study where seq = #{no}
+    	select * from board_study_bak where seq = #{no}
     
     </select>
     
     <insert id="listCreate">
     
-    	insert into board_study 
+    	insert into board_study_bak
     	(seq,mem_id,mem_name,board_subject,board_content,reg_date)
-    	values((select nvl(MAX(seq)+1,0) from board_study),
+    	values((select nvl(MAX(seq),0)+1 from board_study_bak),
     	  #{mem_id},
     	  #{mem_name},
     	  #{board_subject},
     	  #{board_content},
     	  (select SYSDATE from SYS.DUAL)
-    	)
+    	)  
     
     </insert>
     
     <delete id="listDelete">
     	
-    	delete from board_study
+    	delete from board_study_bak
     	where seq = #{no}
     
     </delete>
+    
+    
+    <update id="listModify" parameterType="com.study.domain.BoardListVO">
+    	update board_study_bak
+    	set board_subject = #{board_subject}
+    	, board_content = #{board_content}
+    	, upt_date = (select SYSDATE from SYS.DUAL)
+    	where seq = #{seq}
+
+    </update>
+    
+    <select id="listTotalCount" resultType="Int">
+    
+    	select count(*) from board_study_bak
+    
+    </select>
+    
+    
+    <select id="listSearch" parameterType="hashmap" resultType="com.study.domain.BoardListVO">
+    	
+    	select * 
+    	
+    	from board_study_bak
+    	where 1=1
+    	<if test='combobox.equals("작성자")'>
+    	AND mem_name like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='combobox.equals("제목")'>
+    	AND board_subject like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='combobox.equals("제목+내용")'>
+    	AND board_content like '%'|| #{serch_text} || '%'
+		OR board_subject like '%'|| #{serch_text} || '%'
+       </if>
+       <if test='sdate!="" and edate!="" '>
+       AND reg_date BETWEEN #{sdate} AND #{edate}
+       </if>
+    
+    </select>
      
 </mapper>
 

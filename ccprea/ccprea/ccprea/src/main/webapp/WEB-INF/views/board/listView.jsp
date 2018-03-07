@@ -33,6 +33,14 @@
 		$('#frm').submit();
 
 	}
+	
+	function listInsert(){
+		
+		$('#frm').attr("action","/listCreate");
+		$('#frm').attr("method","post");
+		$('#frm').submit();
+		
+	}
 
 </script>
 
@@ -42,10 +50,8 @@
 
 		<form id="frm" name="frm">
 		
-		<input type="hidden" id="no" name="seq" value="${list.seq }">
-		
-		
-		
+		<input type="hidden" id="no" name="no" value="${list.seq }">
+	
 		<label for="mem_id">아이디 : </label>
 		<input type="text" id='mem_id' name='mem_id' value= '${list.mem_id }' >
 		<br>
@@ -74,9 +80,7 @@
  			</c:otherwise>
 		</c:choose>
 		
- 		
- 		
-		
+ 
 		<form  id="listfrm" name="listfrm">
 			<input type="hidden" id="page" name="page" value="${cri.page }">
 			<input type="hidden" id="page" name="page" value="${cri.perPageNum }">

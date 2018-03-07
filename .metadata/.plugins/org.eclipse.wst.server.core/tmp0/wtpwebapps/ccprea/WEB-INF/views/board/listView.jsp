@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -20,9 +21,9 @@
 	
 	function listview(){
 		
-		
-		
-		location.href="/listAll";
+		$('#listfrm').attr("action","/listAll");
+		$('#listfrm').attr("method","get");
+		$('#listfrm').submit();
 	}
 	
 	function listUpdate(){
@@ -31,6 +32,14 @@
 		$('#frm').attr("method","post");
 		$('#frm').submit();
 
+	}
+	
+	function listInsert(){
+		
+		$('#frm').attr("action","/listCreate");
+		$('#frm').attr("method","post");
+		$('#frm').submit();
+		
 	}
 
 </script>
@@ -42,8 +51,7 @@
 		<form id="frm" name="frm">
 		
 		<input type="hidden" id="no" name="no" value="${list.seq }">
-		
-		</form> 
+	
 		<label for="mem_id">아이디 : </label>
 		<input type="text" id='mem_id' name='mem_id' value= '${list.mem_id }' >
 		<br>
@@ -57,12 +65,26 @@
 		<textarea rows="5" cols="20" id="board_content" name="board_content">
 			${list.board_content }
 		</textarea>
-		
+		</form> 
 		<br>
 		
 		<input type="button" id="list" name="list" value="목록" onclick="listview()">
-		<input type="button" id="update" name="update" value="수정" onclick="listUpdate()">
-		<input type="button" id="delete" name="delete" value="삭제" onclick="delList()">
+		
+		<c:choose>
+			<c:when test="${not empty list.seq }"  >
+				<input type="button" id="update" name="update" value="수정" onclick="listUpdate()">
+	 			<input type="button" id="delete" name="delete" value="삭제" onclick="delList()">
+ 			</c:when>
+ 			<c:otherwise>
+ 				<input type="button" id="insert" name="insert" value="등록" onclick="listInsert()">
+ 			</c:otherwise>
+		</c:choose>
+		
+ 
+		<form  id="listfrm" name="listfrm">
+			<input type="hidden" id="page" name="page" value="${cri.page }">
+			<input type="hidden" id="page" name="page" value="${cri.perPageNum }">
+		</form>
 
 </body>
 </html>

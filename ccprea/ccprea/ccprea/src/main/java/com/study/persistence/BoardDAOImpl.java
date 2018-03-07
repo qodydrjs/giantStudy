@@ -1,5 +1,6 @@
 package com.study.persistence;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,6 +61,13 @@ public class BoardDAOImpl implements BoardDAO {
 	public int listTotalCount() {
 		// TODO Auto-generated method stub
 		return session.selectOne(namespace+".listTotalCount");
+	}
+
+
+	@Override
+	public List<BoardListVO> listSearch(HashMap<String, String> map) {
+		// TODO Auto-generated method stub
+		return session.selectList(namespace+".listSearch", map);
 	}
 	
 	

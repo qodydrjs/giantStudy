@@ -1,5 +1,6 @@
 package com.study.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -53,6 +54,12 @@ public class BoardServiceImpl implements BoardService {
 	public int listTotalCount() throws Exception {
 		// TODO Auto-generated method stub
 		return dao.listTotalCount();
+	}
+
+	@Override
+	public List<BoardListVO> listSearch(HashMap<String, String> map) throws Exception {
+		// TODO Auto-generated method stub
+		return dao.listSearch(map);
 	}
 
 }

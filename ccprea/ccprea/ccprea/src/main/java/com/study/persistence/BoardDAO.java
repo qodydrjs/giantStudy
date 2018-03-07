@@ -1,5 +1,6 @@
 package com.study.persistence;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.study.domain.BoardListVO;
@@ -13,6 +14,7 @@ public interface BoardDAO {
 	public int listDelete(int no);//寃뚯떆湲� �궘�젣
 	public int listModify(BoardListVO vo);
 	public int listTotalCount();
+	public List<BoardListVO> listSearch(HashMap<String, String> map);
 	
 	
 }
