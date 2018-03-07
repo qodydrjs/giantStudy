@@ -11,7 +11,7 @@ public class BoardListVO {
 	private String board_content;
 	private Date reg_date;
 	private Date upt_date;
-	private int view_cnt;
+	private String view_cnt;
 	public int getSeq() {
 		return seq;
 	}
@@ -54,10 +54,10 @@ public class BoardListVO {
 	public void setUpt_date(Date upt_date) {
 		this.upt_date = upt_date;
 	}
-	public int getView_cnt() {
+	public String getView_cnt() {
 		return view_cnt;
 	}
-	public void setView_cnt(int view_cnt) {
+	public void setView_cnt(String view_cnt) {
 		this.view_cnt = view_cnt;
 	}
 	

@@ -64,9 +64,9 @@
                     <tr>
                         <td>${row.seq }</td>
                         <td>${row.mem_name}(${row.mem_id})</td>
-                        <td><a href="/list?no=${row.seq }"> ${row.board_subject } </a></td>
-                        <td><fmt:formatDate value="${row.reg_date }" pattern="yyyy-MM-dd"/> </td>
-                        <td><fmt:formatDate value="${row.upt_date }" pattern="yyyy-MM-dd"/> </td>
+                        <td><a href="/list${pageMaker.makeQuery(pageMaker.cri.page) }&no=${row.seq }"> ${row.board_subject } </a></td>
+                        <td><fmt:formatDate value="${row.reg_date }" pattern="yyyy-MM-dd HH:mm"/> </td>
+                        <td><fmt:formatDate value="${row.upt_date }" pattern="yyyy-MM-dd HH:mm"/> </td>
                         <td>${row.view_cnt }</td>
                     </tr>
                 </c:forEach>

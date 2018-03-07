@@ -11,27 +11,7 @@
 	$(document).ready(function(){
 		
 		$('#checkCreate').click(function(){
-			
-			if(${'mem_id'}.length <= 0 ){
-				alert('아이디를 입력하세요');
-				return;
-			}else if(${'mem_name'}.length <= 0){
-				
-				alert('이름을 입력하세요');
-				return;
-				
-			}else if(${'board_subject'}.length <= 0){
-				
-				alert('게시글 제목을 입력하세요');
-				return;
-				
-			}else if(${'board_content'}.length <= 0){
-				
-				alert('게시글 내용을 입력하세요');
-				return;
-				
-			}
-			
+
 			$('#wirte').submit();
 			
 		})	

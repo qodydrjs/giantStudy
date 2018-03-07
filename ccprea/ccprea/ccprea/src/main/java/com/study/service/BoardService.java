@@ -11,4 +11,7 @@ public interface BoardService {
 	public BoardListVO list(int no) throws Exception;
 	public int listCtrate(BoardListVO vo) throws Exception;
 	public int listDelete(int no) throws Exception;
+	public int listModify(BoardListVO vo) throws Exception;
+	public int listTotalCount() throws Exception;
+	
 }

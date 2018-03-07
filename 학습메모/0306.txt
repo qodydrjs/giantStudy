@@ -1,0 +1,187 @@
+
+1.
+
+
+select A.DEPTNO AS 부서코드 , 
+       A.DNAME AS 부서명, 
+       count(B.DEPTNO) AS 사원수  
+       from DEPT A
+left join EMP B ON A.DEPTNO = B.DEPTNO
+GROUP by A.DEPTNO , A.DNAME
+
+///////////////////
+
+from empt, emp
+where 1=1(+) +가 안붙은 쪽이 기준이되서 조인됨
+
+
+2.
+select A.DEPTNO AS 부서코드  ,
+       A.DNAME AS 부서명, 
+       count(C.PROJECT_CODE) AS 프로젝트수 
+       from DEPT A
+left join EMP B ON A.DEPTNO = B.DEPTNO
+left JOIN PROJECT C ON B.PROJECT_CODE = LOWER(C.PROJECT_CODE) 
+GROUP by A.DEPTNO , A.DNAME
+
+3.
+select A.DEPTNO AS 부서코드,
+       A.DNAME AS 부서명, 
+       B.ENAME AS 사원명,
+       B.JOB AS 직업명,
+       CONCAT(TRUNC(MONTHS_BETWEEN(sysdate, B.HIREDATE)/12),'세') AS 나이,
+       C.PROJECT_CODE AS 프로젝트코드,
+       C.PROJECT_NAME AS 프로젝트명
+       from DEPT A
+left join EMP B ON A.DEPTNO = B.DEPTNO
+right JOIN PROJECT C ON B.PROJECT_CODE = LOWER(C.PROJECT_CODE) 
+GROUP by A.DEPTNO , A.DNAME ,B.ENAME, B.JOB,B.HIREDATE,C.PROJECT_CODE,C.PROJECT_NAME
+HAVING B.JOB in ('SALESMAN','CLERK')
+ORDER BY A.DEPTNO
+
+4.
+
+select AA.부서코드,
+       AA.부서명,
+       SUM(AA.프로젝트기간) 
+from(
+select A.DEPTNO AS 부서코드,
+       A.DNAME AS 부서명, 
+       SUM(C.PROJECT_TERM) AS 프로젝트기간
+       from DEPT A
+left join EMP B ON A.DEPTNO = B.DEPTNO
+right JOIN PROJECT C ON B.PROJECT_CODE = LOWER(C.PROJECT_CODE) 
+GROUP by A.DEPTNO , A.DNAME
+ORDER BY A.DEPTNO) AA
+GROUP BY AA.부서코드, AA.부서명
+
+
+concat 과 같은 '값 '||'값'
+
+decode('col',조건,결과,,,,,,,)
+
+
+
+select case
+	
+	when(조건)
+	 
+	then(결과)
+
+	when(조건)
+	 
+	then(결과)
+
+	when(조건)
+	 
+	then(결과)
+
+	else(결과)
+
+	end
+
+
+
+and 
+
+exists(select * from emp
+                );
+
+
+
+5.
+select DEPTNO,
+       DNAME,
+       LOC,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+       from dept;
+union all
+select DEPTNO,
+       null,
+       null,
+       EMPNO,
+       ENAME,
+       JOB,
+       MGR,
+       HIREDATE,
+       SAL,
+       COMM,
+       PROJECT_CODE,
+       null,
+       null
+from emp
+union all
+select null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       project_code,
+       project_name,
+       project_term
+       from project;
+
+
+6.
+
+
+
+SELECT DISTINCT
+    de.DNAME,
+    em.ENAME,
+    nvl(SUM(em.SAL),0)
+FROM DEPT de,EMP em
+WHERE de.DEPTNO = em.DEPTNO(+) 
+group by ROLLUP(de.DNAME,em.ENAME),ROLLUP(de.DNAME)
+ORDER BY de.DNAME
+
+;
+
+
+
+
+
+select * from (
+SELECT 
+        1,
+        de.DNAME ,
+       nvl(em.ENAME,' '),
+       nvl(SUM(em.SAL),0)
+FROM DEPT de,EMP em
+WHERE de.DEPTNO = em.DEPTNO(+)
+GROUP BY de.DEPTNO, 1, '1', de.DNAME, em.ENAME, 
+nvl(em.ENAME,' '), em.ENAME, ' ', em.ENAME, ' ', 
+em.SAL
+union all
+select  2,'부서별 누계',' ',null from DUAL
+union all
+select 2,DEPT.DNAME,' ',nvl(SUM(EMP.SAL),0) from
+DEPT, EMP
+WHERE DEPT.DEPTNO = EMP.DEPTNO(+) 
+group by DEPT.DNAME, ' ', 2
+union all
+select  3,'총계',' ',null from DUAL
+union all
+select 3,' ',' ',SUM(EMP.SAL) from
+DEPT, EMP
+WHERE DEPT.DEPTNO = EMP.DEPTNO(+) 
+group by ' ', ' ', 3
+) AA
+;
+
+
+

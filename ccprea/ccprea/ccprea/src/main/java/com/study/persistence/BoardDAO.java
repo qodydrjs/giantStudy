@@ -11,5 +11,8 @@ public interface BoardDAO {
 	public BoardListVO list(int no); // �듅�젙 寃뚯떆湲� 議고쉶
 	public int listCreate(BoardListVO vo); //寃뚯떆湲� �벑濡�
 	public int listDelete(int no);//寃뚯떆湲� �궘�젣
+	public int listModify(BoardListVO vo);
+	public int listTotalCount();
+	
 	
 }

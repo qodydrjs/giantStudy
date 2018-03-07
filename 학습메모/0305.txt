@@ -1,0 +1,106 @@
+
+page = 1
+
+perPageNum = 10
+
+totalPagg = 202;
+
+
+
+
+
+
+
+Criteria
+
+private int page;
+private int perPageNum;
+
+public Criteria(){
+
+	this.page = 1;
+	this.perPageNum = 10;
+
+}
+
+get set
+
+
+
+public int getPageStart(){
+
+	(this.page-1) * this.perPageNum;
+
+}
+
+
+
+
+UriComponents uriComponents = UriComponentsBilder.newInstance()
+	.queryParam("page",page)
+	.queryParam("perPageNum",cri.gerPerPageNum())
+	.build()
+	return uriComponents.toStringURI();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+redirect( 어트리뷰트 공유 , URI 변경
+
+forwrd(어트
+ 
+
+map(key,value)
+
+
+
+select id="listAll" resultType="map" parameterType="integer"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
