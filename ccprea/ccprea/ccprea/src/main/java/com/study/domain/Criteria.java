@@ -8,7 +8,7 @@ public class Criteria {
 	public Criteria() {
 		
 		this.setPage(1);
-		this.setPerPageNum(10);
+		this.setPerPageNum(3);
 		
 	}
 

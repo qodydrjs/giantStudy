@@ -42,10 +42,10 @@ public class StudyController {
 			Model model,
 			HttpServletRequest request) throws Exception{
 
-		List<BoardListVO> list = new ArrayList<BoardListVO>();
+		    List<BoardListVO> list = new ArrayList<BoardListVO>();
 		
 		
-		if(request.getParameter("combobox")!=null){
+		
 			
 			HashMap<String, String> map = new HashMap<String, String>();
 			
@@ -54,28 +54,42 @@ public class StudyController {
 			String sdate = request.getParameter("sdate");
 			String edate = request.getParameter("edate");
 			
+			if(combobox == null)
+				combobox = "";
+			if(serch_text == null)
+				serch_text = "";
+			if(sdate == null)
+				sdate = "";
+			if(edate == null)
+				edate = "";
+			
 			map.put("combobox", combobox);
 			map.put("serch_text", serch_text);
 			map.put("sdate", sdate);
 			map.put("edate", edate);
 		
 			
-			list = service.listSearch(map);
+			
 			
 			model.addAttribute("combobox", combobox);
 			model.addAttribute("serch_text", serch_text);
 			model.addAttribute("sdate", sdate);
 			model.addAttribute("edate", edate);
 			
-		}else{
+		
 			
-			
-			list = service.listAll();
-		}
+			//list = service.listAll();
+		
 		//
 		PageMaker pageMaker = new PageMaker();
-		pageMaker.setCri(cri);
 		pageMaker.setTotalCount(service.listTotalCount());
+		pageMaker.setCri(cri);
+		
+		map.put("queryPageStart", Integer.toString(pageMaker.getQueryPageStart()));
+		map.put("queryPageEnd", Integer.toString(pageMaker.getQueryPageEnd()));
+		
+		list = service.listSearch(map);
+		
 		model.addAttribute("list", list) ;
 		model.addAttribute("pageMaker", pageMaker);
 		

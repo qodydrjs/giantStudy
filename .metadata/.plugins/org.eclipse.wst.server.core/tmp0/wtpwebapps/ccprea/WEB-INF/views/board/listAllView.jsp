@@ -169,7 +169,7 @@
             </c:when>
             <c:otherwise>
                 <tr>
-                    <td colspan="5">조회된 결과가 없습니다.</td>
+                    <td colspan="7">조회된 결과가 없습니다.</td>
                 </tr>
             </c:otherwise>
         </c:choose>
@@ -177,6 +177,19 @@
     </tbody>
 </table>
 
+	<c:if test="${pageMaker.prev == true}">
+   <a href="/listAll?page=1" > &lt;&lt; </a>
+   <a href="/listAll?page=${pageMaker.startPage -pageMaker.cri.perPageNum }" > &lt; </a>
+   </c:if>
+   
+	<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" varStatus="status">
+		<a href="/listAll?page=${status.index}" > ${status.index} </a>
+	</c:forEach>
+	
+	<c:if test="${pageMaker.next == true}">
+	     <a href="/listAll?page=${pageMaker.startPage + pageMaker.cri.perPageNum }" > > </a>
+   		<a href="/listAll?page=${pageMaker.totalCount }" > >> </a>
+   </c:if>
 
 	
 

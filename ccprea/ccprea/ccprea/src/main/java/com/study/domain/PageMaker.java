@@ -9,10 +9,33 @@ public class PageMaker {
 	private int endPage;
 	private boolean prev;
 	private boolean next;
+	private int queryPageStart;
+	private int queryPageEnd;
 	
-	private int displayPaheNum=10;
+	public int getQueryPageStart() {
+		return queryPageStart;
+	}
+
+	public void setQueryPageStart(int queryPageStart) {
+		this.queryPageStart = queryPageStart;
+	}
+
+	public int getQueryPageEnd() {
+		return queryPageEnd;
+	}
+
+	public void setQueryPageEnd(int queryPageEnd) {
+		this.queryPageEnd = queryPageEnd;
+	}
+
+
+	private int displayPaheNum=5;
 	
 	private Criteria cri;
+	
+	public PageMaker(){
+		
+	}
 
 	public int getTotalCount() {
 		return totalCount;
@@ -68,12 +91,36 @@ public class PageMaker {
 
 	public void setCri(Criteria cri) {
 		this.cri = cri;
+		calcData();
 	}
 	
 	private void calcData() {
 		
-		endPage = (int) (Math.ceil(cri.getPage()/(double) displayPaheNum) *displayPaheNum);
-		startPage =(endPage - displayPaheNum) +1;
+		
+		queryPageEnd = (int) (cri.getPage() *displayPaheNum);
+		queryPageStart =(queryPageEnd - displayPaheNum) +1;
+		
+		
+		startPage = (int) Math.ceil(cri.getPage() / (double) cri.getPerPageNum())*cri.getPerPageNum()-cri.getPerPageNum()+1;
+		endPage =  startPage + cri.getPerPageNum()-1;
+		
+//		startPage = (int) Math.ceil(cri.getPage() / (double) cri.getPerPageNum());
+//		endPage = startPage + cri.getPerPageNum()-1;
+		
+		
+		
+		totalCount = (int) Math.ceil(totalCount / (double)displayPaheNum) ;
+		
+		if(endPage>totalCount){
+			endPage=totalCount;
+		}
+		
+		prev = startPage == 1 ? false : true;
+		next = endPage == totalCount ? false : true;
+		
+//		queryPageStart = (cri.getPage() * cri.getPerPageNum()) - cri.getPerPageNum() + 1 ;
+//		queryPageEnd = (cri.getPage() * cri.getPerPageNum());
+		
 		
 	}
 	
