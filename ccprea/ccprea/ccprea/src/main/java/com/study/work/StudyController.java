@@ -49,19 +49,10 @@ public class StudyController {
 			
 			HashMap<String, String> map = new HashMap<String, String>();
 			
-			String combobox = request.getParameter("combobox");
-			String serch_text = request.getParameter("serch_text");
-			String sdate = request.getParameter("sdate");
-			String edate = request.getParameter("edate");
-			
-			if(combobox == null)
-				combobox = "";
-			if(serch_text == null)
-				serch_text = "";
-			if(sdate == null)
-				sdate = "";
-			if(edate == null)
-				edate = "";
+			String combobox = request.getParameter("combobox") != null ? request.getParameter("combobox") : "";
+			String serch_text = request.getParameter("serch_text") != null ? request.getParameter("serch_text") : "";
+			String sdate = request.getParameter("sdate") != null ? request.getParameter("sdate") : "";
+			String edate = request.getParameter("edate") != null ? request.getParameter("edate") : "";
 			
 			map.put("combobox", combobox);
 			map.put("serch_text", serch_text);
@@ -95,6 +86,40 @@ public class StudyController {
 		
 		return "board/listAllView";
 	}
+	
+	@RequestMapping(value="ajaxList")
+	public String ajaxList(Criteria cri,
+						Model model,
+						HttpServletRequest request) throws Exception{
+		
+		List<BoardListVO> list = new ArrayList<BoardListVO>();
+		HashMap<String, String> map = new HashMap<String, String>();
+		
+		String combobox = request.getParameter("combobox") != null ? request.getParameter("combobox") : "";
+		String serch_text = request.getParameter("serch_text") != null ? request.getParameter("serch_text") : "";
+		String sdate = request.getParameter("sdate") != null ? request.getParameter("sdate") : "";
+		String edate = request.getParameter("edate") != null ? request.getParameter("edate") : "";
+		
+		map.put("combobox", combobox);
+		map.put("serch_text", serch_text);
+		map.put("sdate", sdate);
+		map.put("edate", edate);
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setTotalCount(service.listTotalCount());
+		pageMaker.setCri(cri);
+		
+		map.put("queryPageStart", Integer.toString(pageMaker.getQueryPageStart()));
+		map.put("queryPageEnd", Integer.toString(pageMaker.getQueryPageEnd()));
+		
+		list = service.listSearch(map);
+		
+		model.addAttribute("list", list) ;
+		model.addAttribute("pageMaker", pageMaker);
+	
+		return "board/ajaxListView";
+	}
+	
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public String list(@ModelAttribute("cri") Criteria cri
@@ -137,7 +162,7 @@ public class StudyController {
 			@RequestParam(value="chk", defaultValue="0") List<String> chk )throws Exception {
 
 		
-		//일반 삭제
+		//�씪諛� �궘�젣
 		if(no !=0){
 			
 			int chekc = service.listDelete(no);

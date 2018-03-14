@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "" >
+  
+  <!-- 
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> -->
+<mapper namespace="com.project.mapper.sign_mapper">
+
+
+	<resultMap id="SignBoardVO" type="com.project.vo.SignBoardVO" autoMapping="true">
+		  <result property="seq" column="SEQ"/>
+		  <result property="empNum" column="EMP_NUM"/>
+		  <result property="signSubject" column="SIGN_SUBJECT"/>
+		  <result property="signContent" column="SIGN_CONTENT"/>
+		  <result property="regDate" column="REG_DATE"/>
+		  <result property="signDate" column="SIGN_DATE"/>
+		  <result property="signPerson" column="SIGN_PERSON"/>
+		  <result property="signState" column="SIGN_STATE"/>
+		  <result property="nextSign" column="NEXT_SIGN"/>
+	</resultMap>
+	
+
+	
+	<select id="listSeq" parameterType="integer" resultMap="SignBoardVO">
+	
+		SELECT 
+		    SB.SEQ,
+		    EM.EMP_NAME AS EMP_NUM,
+		    SB.SIGN_SUBJECT,
+		    SB.SIGN_CONTENT,
+		    SB.REG_DATE,
+		    SB.SIGN_DATE,
+		    SB.SIGN_PERSON,
+		    SS.STATE_NAME AS SIGN_STATE
+		FROM B_SIGNBOARD SB, B_EMPLOYEE EM, B_SIGN_STATE SS
+		WHERE 1=1  
+		AND SB.EMP_NUM = EM.EMP_NUM(+)
+        AND SS.STATE_NUM = SB.SIGN_STATE
+		AND SEQ = #{seq}
+		
+	</select>
+	
+
+	<select id="list" parameterType="integer" resultMap="SignBoardVO">
+		<![CDATA[
+		
+		SELECT 
+		    SB.SEQ,
+		    EM.EMP_NAME AS EMP_NUM,
+		    SB.SIGN_SUBJECT,
+		    SB.SIGN_CONTENT,
+		    SB.REG_DATE,
+		    SB.SIGN_DATE,
+		    SB.SIGN_PERSON,
+		    SS.STATE_NAME AS SIGN_STATE
+		FROM B_SIGNBOARD SB, B_EMPLOYEE EM, B_SIGN_STATE SS
+		WHERE 1=1  
+		AND SB.EMP_NUM = EM.EMP_NUM(+)
+        AND SS.STATE_NUM = SB.SIGN_STATE
+		AND SB.EMP_NUM =#{empNum}
+	
+	    union ALL
+
+        SELECT SB.SEQ,
+		    EM.EMP_NAME AS EMP_NUM,
+		    SB.SIGN_SUBJECT,
+		    SB.SIGN_CONTENT,
+		    SB.REG_DATE,
+		    SB.SIGN_DATE,
+		    SB.SIGN_PERSON,
+		    SS.STATE_NAME AS SIGN_STATE
+            FROM (
+        SELECT 
+            BS.SEQ,
+		    BS.EMP_NUM,
+		    BS.SIGN_SUBJECT,
+		    BS.SIGN_CONTENT,
+		    BS.REG_DATE,
+		    BS.SIGN_DATE,
+		    BS.SIGN_PERSON,
+		    BS.SIGN_STATE
+        FROM  B_SIGNBOARD BS,
+        ( SELECT * FROM B_SIGN_LIST WHERE EMP_NUM = #{empNum} ) BSL
+        WHERE BS.NEXT_SIGN >= BSL.SING_FLAG
+        AND BS.SIGN_STATE = 2
+        AND BS.EMP_NUM not in(#{empNum}) ) SB,B_EMPLOYEE EM, B_SIGN_STATE SS
+        WHERE 1=1 
+        AND SB.EMP_NUM = EM.EMP_NUM(+)
+        AND SS.STATE_NUM = SB.SIGN_STATE
+        ORDER BY SEQ DESC
+		
+		
+		]]>
+	</select>
+	
+	<select id="signLine"  parameterType="integer"  resultType="com.project.vo.SignLineVO">
+		
+		SELECT
+            DDD.EMP_NAME,
+            ra.RANK_NAME
+        FROM
+        (
+        
+             SELECT 
+                signlist.EMP_NUM
+             FROM 
+             B_EMPLOYEE employee, 
+             B_SIGN_LIST signlist
+             WHERE employee.DEPARTMENT_NUM = signlist.DEPARTMANT_NUM
+             AND employee.EMP_NUM = #{seq}
+        ) A, B_EMPLOYEE DDD, B_RANK ra
+        WHERE A.EMP_NUM = DDD.EMP_NUM
+        AND ra.RANK_SEQ = DDD.RANK_SEQ
+		
+	</select>
+	
+	<select id="boardCount" parameterType="integer" resultType="integer">
+		SELECT 
+		    count(*)
+		FROM B_SIGNBOARD
+
+	</select>
+		
+	
+	<insert id="boardinsert"  parameterType="com.project.vo.SignBoardVO"  >
+	<![CDATA[
+		INSERT INTO B_SIGNBOARD
+		(
+			SEQ,
+			EMP_NUM,
+			SIGN_SUBJECT,
+			SIGN_CONTENT,
+			REG_DATE,
+			SIGN_STATE,
+			NEXT_SIGN
+		)
+		VALUES
+		(
+			 (SELECT NVL(MAX(SEQ),0) + 1 FROM B_SIGNBOARD),
+			 #{empNum},
+			 #{signSubject},
+			 #{signContent},
+			 SYSDATE,
+			 #{signState},
+			 #{nextSign}
+		)
+		
+		]]>
+	</insert>
+	
+	<select id="signInjsert" parameterType="com.project.vo.SignVO">
+		INSERT INTO B_SIGN
+		(
+			SEQ,
+			SIGN_STATE,
+			EMP_NUM,
+			SIGN_DATE,
+			SIGN_TEXT,
+			BOARD_NUM
+				
+		)
+		VALUES
+		(
+			 (SELECT NVL(MAX(SEQ),0) + 1 FROM B_SIGN),
+			 #{signState},
+			 #{empNum},
+			 SYSDATE,
+			 #{signText},
+			 #{boardNum}
+		)
+		
+	</select>
+	
+</mapper>

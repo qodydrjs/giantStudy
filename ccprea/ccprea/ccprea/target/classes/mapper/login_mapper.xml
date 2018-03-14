@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mapper.mapper">
+
+
+	<resultMap id="EmployeeVO" type="com.project.vo.EmployeeVO">
+		  <result property="seq" column="SEQ"/>
+		  <result property="empNum" column="EMP_NUM"/>
+		  <result property="empName" column="EMP_NAME"/>
+		  <result property="birthDay" column="BIRTH_DAY"/>
+		  <result property="address" column="ADDRESS"/>
+		  <result property="entryDay" column="ENTRY_DAY"/>
+		  <result property="leaveDay" column="LEAVE_DAY"/>
+		  <result property="password" column="PASSWORD"/>
+		  <result property="rankSeq" column="RANK_SEQ"/>
+		  
+		  
+	</resultMap>
+	
+	<select id="login" parameterType="com.project.vo.EmployeeVO" resultMap="EmployeeVO">
+		
+		SELECT * 
+		FROM B_EMPLOYEE
+		WHERE 1=1 
+		AND EMP_NUM = #{empNum}
+		AND PASSWORD = #{password}
+		
+	</select>
+
+</mapper>

@@ -98,13 +98,31 @@
 			
 			$('#serch_btn').click(function(){
 				
-				$('#frm_serch').attr("action","/listAll");
+			/* 	$('#frm_serch').attr("action","/listAll");
 				$('#frm_serch').attr("method","GET");
-				$('#frm_serch').submit();
+				$('#frm_serch').submit(); */
+				
+				var datas = $('#frm_serch').serialize();
+				
+				
+				$.ajax({
+				
+					data:datas,
+					type:"post",
+					url:"ajaxList",
+					datatype:"html",
+					success:function(data){
+						$('#ajaxList').html(data);
+					},
+					error:function(){
+					}
+					
+				});
+				
+				
 				
 			});
 	});
-	
 
 	function createList(){
 		
@@ -135,6 +153,8 @@
 	<input type="text" id="edate" name="edate" value="${edate }">
 	
 	</form>
+
+	<div id ="ajaxList">
 
 	<table border="1" bordercolor="black">
 
@@ -192,6 +212,7 @@
    </c:if>
 
 	
+</div>
 
 </body>
 </html>
