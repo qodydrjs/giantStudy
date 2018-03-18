@@ -18,6 +18,7 @@
 		
 		if(msg == 'SUCCESS'){
 			alert('글쓰기 성공');
+			
 		}else if(msg == 'FAILED'){
 			alert('글쓰기 실패');
 		}
@@ -51,11 +52,34 @@
 			location.href="write";
 			
 		})
+		
+		
+		$('#search_btn').click(function(){
+			
+			var frm = $('#frm_search')
+			frm.attr("action","singList");
+			frm.attr("method","POST");
+			frm.submit();
+			
+		})
+		
+		
+		$('select[id=sign_box]').change(function(){
+			
+			var optionSelected = $(this).find("option:selected");
+		    var valueSelected  = optionSelected.val();
+		    var textSelected   = optionSelected.text();
+			
+			$('form[id=frm_sign] input[name=sign_box]').attr("value",textSelected) ;
+			$('#frm_sign').attr("action","singList");
+			$('#frm_sign').attr("method","POST");
+			$('#frm_sign').submit();
+		})
 	})
 	
-	function updateSignBoard(seq){
+	function updateSignBoard(no){
 		
-		location.href = "write?seq="+seq;
+		location.href = "write?no="+no;
 		
 	}
 
@@ -72,32 +96,39 @@
 	
 	<%=id %>님 환영합니다.  --%>
 	
-	${empName }님 환영합니다 <input type="button" id="logoutBtn" value="로그아웃">
+	${empName }(${rankName})님 환영합니다 <input type="button" id="logoutBtn" value="로그아웃">
 <br>
 <div>
 	<input type="button" value="글쓰기" id="write_btn" >
-	<input type="button" value="대리결제" id="deri_btn">
+	
 </div>
 <br>
+<form id = frm_sign>
+	<input type="hidden" name="sign_box" >
+</form>
+
 <div style="margin: auto; ">
-	<select id="search_box"> 
-		<option value="all">선택</option>
-		<option value="write">작성자</option>
-		<option value="subject">제목</option>
-		<option value="singman">결재자</option>
+<form id="frm_search">
+	<select name="search_box"> 
+		<option value="all"<c:if test="${search_box == 'all'}"> selected="selected" </c:if> >선택</option>
+		<option value="write" <c:if test="${search_box == 'write'}"> selected="selected" </c:if> >작성자</option>
+		<option value="subject" <c:if test="${search_box == 'subject'}"> selected="selected" </c:if> >제목</option>
+		<option value="singman" <c:if test="${search_box == 'singman'}"> selected="selected" </c:if> >결재자</option>
 	</select>
-	<input type="text" id="search_text" name="search_text"  size="20"> 
+	<input type="text" id="search_text" name="search_text" size="20"  value=${search_text }> 
 	<select id="sign_box"> 
-		<option value="all">결재상태</option>
-		<option value="save">임시저장</option>
-		<option value="wait">결재대기</option>
-		<option value="going">결재중</option>
-		<option value="success">결재완료</option>
+		<option value="all" <c:if test="${sign_box == '결재상태'}"> selected="selected" </c:if> >결재상태</option>
+		<option value="save" <c:if test="${sign_box == '임시저장'}"> selected="selected" </c:if> >임시저장</option>
+		<option value="wait" <c:if test="${sign_box == '결재대기'}"> selected="selected" </c:if> >결재대기</option>
+		<option value="going" <c:if test="${sign_box == '결재중'}"> selected="selected" </c:if> >결재중</option>
+		<option value="success" <c:if test="${sign_box == '결재완료'}"> selected="selected" </c:if> >결재완료</option>
+		<option value="fail" <c:if test="${sign_box == '반려'}"> selected="selected" </c:if> >반려</option>
 	</select>
 	<br>
-	<input type="text" id="sdate" name="sdate" > ~
-	<input type="text" id="edate" name="edate" >
+	<input type="text" id="sdate" name="sdate" value="${sdate }"> ~
+	<input type="text" id="edate" name="edate" value="${edate }">
 	<input type="button" id="search_btn" value="검색">
+</form>
 </div>
 
 <div>

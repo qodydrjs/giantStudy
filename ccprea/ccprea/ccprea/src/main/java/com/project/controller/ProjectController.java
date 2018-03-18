@@ -58,14 +58,12 @@ public class ProjectController {
 			return "redirect:login";
 		}else{
 			
-			System.out.println("이름 :::::::::::; "+loginInfo.getEmpName());
-			System.out.println("비밀번호 :::::::::::; "+loginInfo.getPassword());
-			
 			rttr.addFlashAttribute("msg", "성공");
 			
 			HttpSession session = request.getSession(true);
 			session.setAttribute("empName", loginInfo.getEmpName());
 			session.setAttribute("empNum", loginInfo.getEmpNum());
+			session.setAttribute("rankName", loginInfo.getRankSeq());
 			
 			return "redirect:singList";
 		}
@@ -73,43 +71,83 @@ public class ProjectController {
 	}
 	
 	@RequestMapping(value="singList")
-	public String singList(Model model, HttpSession session){
-
-		int no = Integer.parseInt(session.getAttribute("empNum").toString() );
+	public String singList(Model model, 
+							HttpSession session,
+							HttpServletRequest request){
 		
-		List<SignBoardVO> list = signBoardService.list(no);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		//////////////////////
+
+			String search_box = request.getParameter("search_box") == null ?
+					"" : request.getParameter("search_box");
+
+			String search_text = request.getParameter("search_text") == null ?
+					"" : request.getParameter("search_text");
+			
+			String sdate = request.getParameter("sdate") == null ?
+					"" : request.getParameter("sdate");
+			
+			String edate = request.getParameter("edate") == null ?
+					"" : request.getParameter("edate");
+			
+			String sign_box = request.getParameter("sign_box") == null ?
+					"" : request.getParameter("sign_box");
+			
+			map.put("search_box", search_box);
+			map.put("search_text", search_text);
+			map.put("sdate", sdate);
+			map.put("edate", edate);
+			map.put("sign_box", sign_box);
+			map.put("empNum", session.getAttribute("empNum").toString());
+			
+	
+		
+		///////////////////////
+		//int no = Integer.parseInt(session.getAttribute("empNum").toString() );
+		
+		List<SignBoardVO> list = signBoardService.list(map);
 		
 		model.addAttribute("list", list);
+		
+		model.addAttribute("search_box", search_box);
+		model.addAttribute("search_text", search_text);
+		model.addAttribute("sdate", sdate);
+		model.addAttribute("edate", edate);
+		model.addAttribute("sign_box", sign_box);
+		
 		
 		return "project/board/signListView";
 	}
 	
 	
 	@RequestMapping(value="logout")
-	public String logout(HttpSession session){
-		
-		session.removeAttribute("empName");
-		session.removeAttribute("empNum");
+	public String logout(HttpSession session){	
+		//session.removeAttribute("empName");
+		//session.removeAttribute("empNum");
+		session.invalidate();
 		
 		return "redirect:login";
 	}
 	
 	@RequestMapping(value="write" , method=RequestMethod.GET)
-	public String writeGet(@RequestParam(value="seq",defaultValue="0") int seq,
+	public String writeGet(@RequestParam(value="no",defaultValue="0") int no,
 			Model model,
 			HttpSession session){
 		
 		String sessionNum = session.getAttribute("empNum").toString();
 		
-		if(seq!=0){
-			SignBoardVO list = signBoardService.listSeq(seq);
+		
+		if(no!=0){
+			SignBoardVO list = signBoardService.listSeq(no); //게시글 가져오기
 			model.addAttribute("list", list);
 		}
 		
-		List<SignLineVO> line= signBoardService.signLine(Integer.parseInt(sessionNum));
-		
-		
+		List<SignLineVO> line= signBoardService.signLine(Integer.parseInt(sessionNum)); //결제라인 
 		model.addAttribute("line", line);
+		
+		List<SignVO> signlist = signBoardService.signlist(no);//결재여부
+		model.addAttribute("signlist", signlist);
 		
 		
 		return "project/board/writeView";
@@ -121,36 +159,117 @@ public class ProjectController {
 		SignBoardVO vo,
 		HttpSession session){
 		
-		int check ;
+		//vo.seq 가 0 이면 게시글 작성 아니면 업데이트
+		
+		
+		int check  = 1;
 		
 		String sessionid = session.getAttribute("empName").toString();
-		String requestStr = request.getParameter("empName").toString();
+		String requestStr = request.getParameter("empName");
 		String sessionNum = session.getAttribute("empNum").toString();
-		
-		System.out.println(sessionid + " ;;::::::::::::: " + requestStr); 
+		String h_listsyate = request.getParameter("h_listsyate");
 
-		if(sessionid.equals(requestStr)){
-			
-			vo.setNextSign(1); //결제 처음 신청시 다음에 결제해야 할 사람 번호
-			check = signBoardService.BoardInsert(vo);
-			
-			if(vo.getSignState().equals("2")){
+		if(sessionid.equals(requestStr)){ //나의 결제 작성
+
+			if(vo.getSignState().equals("2")){ //결재
 				
-				int setBoardNum = signBoardService.BoardCount(Integer.parseInt(sessionNum));
+				if(h_listsyate.equals("임시저장")){ //임시저장글을 결재 할때
+					vo.setSignState("5");
+					vo.setEmpNum("");
+					signBoardService.BoardUpdate(vo);
+					
+					///결재 라인 생성
+					int setBoardNum = signBoardService.BoardCount(Integer.parseInt(sessionNum));
+					Map<String, String> map = new HashMap<String, String>();
+					map.put("boardNum", String.valueOf(setBoardNum));
+					map.put("empNum", sessionNum);
+					signBoardService.signInjsert(map);
 				
-				SignVO svo = new SignVO();
-				svo.setSignState(Integer.parseInt(vo.getSignState()));
-				svo.setEmpNum(Integer.parseInt(sessionNum));
-				svo.setSignText("결재허가");
-				svo.setBoardNum(setBoardNum);
+					//나의 결재 라인 생성
+					signBoardService.mySignInjsert(map);
+				}else{ // 결재 할때
+				////게시글작성
+					vo.setNextSign(1); //결제 처음 신청시 다음에 결제해야 할 사람 번호 사용안함
+					vo.setSignState("5");
+					check = signBoardService.BoardInsert(vo);
+					
+					
+					
+					///결재 라인 생성
+					int setBoardNum = signBoardService.BoardCount(Integer.parseInt(sessionNum));
+					Map<String, String> map = new HashMap<String, String>();
+					map.put("boardNum", String.valueOf(setBoardNum));
+					map.put("empNum", sessionNum);
+					
+					signBoardService.signInjsert(map);
+					
+					///
+					
+					//나의 결재 라인 생성
+					signBoardService.mySignInjsert(map);
+				}
 				
 				
-				signBoardService.signInjsert(svo);
+			}else if(vo.getSignState().equals("1")){ //임시저장
 				
+				//if(vo.getSeq()==0){ 
+					vo.setNextSign(1); //결제 처음 신청시 다음에 결제해야 할 사람 번호 사용안함
+					vo.setSignState("1");
+					check = signBoardService.BoardInsert(vo);
+					
+				//}
 			}
 			
-		}else{
-			check = 0;
+		}else{ //반려 및 결재
+			
+		     if(vo.getSignState().equals("2")){
+				//결재 SignBoardVO vo
+		    	 
+		    	 //SIGN_BOARD 업데이트
+		    	 SignBoardVO vo1 = vo;
+		    	 vo1.setEmpNum(sessionNum);
+		    	 int lastsign = signBoardService.lastSignCount(Integer.parseInt(sessionNum));
+		    	 if(lastsign == 1){
+		    		 vo1.setSignState("4");
+		    	 }else{
+		    		 vo1.setSignState("2");
+		    	 }
+		    	 signBoardService.BoardUpdate(vo1);
+		    	 
+		    	 //SIGN 업데이트 
+		    	 Map<String, String> signmap = new HashMap<String, String>();
+		    	 
+		    	 signmap.put("signState", "Y");
+		    	 signmap.put("empNum", sessionNum );
+		    	 signmap.put("boardNum", String.valueOf( vo.getSeq() ));
+		    	 signBoardService.signUpdate(signmap);
+		    	 
+		    	 //SIGN 다음 결제자 지정
+		    	 Map<String, String> nsignmap = new HashMap<String, String>();
+		    	 nsignmap.put("empNum", sessionNum );
+		    	 nsignmap.put("boardNum", String.valueOf( vo.getSeq() ));
+		    	 signBoardService.nextSignUpdate(signmap);
+		    	 
+		    	 
+			}else if(vo.getSignState().equals("3")){
+				
+				//반려
+				
+				//SIGN_BOARD 업데이트
+		    	 SignBoardVO vo1 = vo;
+		    	 vo1.setEmpNum(sessionNum);
+		    	 vo1.setSignState("3");
+		    	 signBoardService.BoardUpdate(vo1);
+		    	 
+		    	 //SIGN 업데이트 
+		    	 Map<String, String> signmap = new HashMap<String, String>();
+		    	 
+		    	 signmap.put("signState", "N");
+		    	 signmap.put("empNum", sessionNum );
+		    	 signmap.put("boardNum", String.valueOf( vo.getSeq() ));
+		    	 signBoardService.signUpdate(signmap);
+			}
+			
 		}
 		
 		

@@ -21,11 +21,20 @@
 	
 	<select id="login" parameterType="com.project.vo.EmployeeVO" resultMap="EmployeeVO">
 		
-		SELECT * 
-		FROM B_EMPLOYEE
+		SELECT 
+			B_EMPLOYEE.EMP_NUM,
+			B_EMPLOYEE.EMP_NAME,
+			B_EMPLOYEE.BIRTH_DAY,
+			B_EMPLOYEE.ADDRESS,
+			B_EMPLOYEE.ENTRY_DAY,
+			B_EMPLOYEE.LEAVE_DAY,
+			B_EMPLOYEE.PASSWORD,
+			B_RANK.RANK_NAME AS RANK_SEQ
+		FROM B_EMPLOYEE,B_RANK
 		WHERE 1=1 
-		AND EMP_NUM = #{empNum}
-		AND PASSWORD = #{password}
+        AND B_EMPLOYEE.RANK_SEQ = B_RANK.RANK_SEQ(+)
+		AND B_EMPLOYEE.EMP_NUM = #{empNum}
+		AND B_EMPLOYEE.PASSWORD = #{password}
 		
 	</select>
 

@@ -43,9 +43,9 @@
 	</select>
 	
 
-	<select id="list" parameterType="integer" resultMap="SignBoardVO">
-		<![CDATA[
-		
+	<select id="list" parameterType="map" resultMap="SignBoardVO">
+		SELECT * FROM
+		(
 		SELECT 
 		    SB.SEQ,
 		    EM.EMP_NAME AS EMP_NUM,
@@ -53,46 +53,63 @@
 		    SB.SIGN_CONTENT,
 		    SB.REG_DATE,
 		    SB.SIGN_DATE,
-		    SB.SIGN_PERSON,
+		    (SELECT EMP_NAME FROM B_EMPLOYEE
+		    WHERE EMP_NUM = SB.SIGN_PERSON) AS SIGN_PERSON,
 		    SS.STATE_NAME AS SIGN_STATE
 		FROM B_SIGNBOARD SB, B_EMPLOYEE EM, B_SIGN_STATE SS
 		WHERE 1=1  
 		AND SB.EMP_NUM = EM.EMP_NUM(+)
-        AND SS.STATE_NUM = SB.SIGN_STATE
+		AND SS.STATE_NUM = SB.SIGN_STATE
 		AND SB.EMP_NUM =#{empNum}
+		<if test='sdate!="" and edate!="" '>
+	       AND reg_date BETWEEN #{sdate} AND #{edate}
+	     </if>
 	
 	    union ALL
 
-        SELECT SB.SEQ,
-		    EM.EMP_NAME AS EMP_NUM,
-		    SB.SIGN_SUBJECT,
-		    SB.SIGN_CONTENT,
-		    SB.REG_DATE,
-		    SB.SIGN_DATE,
-		    SB.SIGN_PERSON,
-		    SS.STATE_NAME AS SIGN_STATE
-            FROM (
         SELECT 
-            BS.SEQ,
-		    BS.EMP_NUM,
-		    BS.SIGN_SUBJECT,
-		    BS.SIGN_CONTENT,
-		    BS.REG_DATE,
-		    BS.SIGN_DATE,
-		    BS.SIGN_PERSON,
-		    BS.SIGN_STATE
-        FROM  B_SIGNBOARD BS,
-        ( SELECT * FROM B_SIGN_LIST WHERE EMP_NUM = #{empNum} ) BSL
-        WHERE BS.NEXT_SIGN >= BSL.SING_FLAG
-        AND BS.SIGN_STATE = 2
-        AND BS.EMP_NUM not in(#{empNum}) ) SB,B_EMPLOYEE EM, B_SIGN_STATE SS
-        WHERE 1=1 
-        AND SB.EMP_NUM = EM.EMP_NUM(+)
-        AND SS.STATE_NUM = SB.SIGN_STATE
-        ORDER BY SEQ DESC
+	    SB.SEQ,
+	    EM.EMP_NAME AS EMP_NUM,
+	    SB.SIGN_SUBJECT,
+	    SB.SIGN_CONTENT,
+	    SB.REG_DATE,
+	    SB.SIGN_DATE,
+	    (SELECT EMP_NAME FROM B_EMPLOYEE
+	    WHERE EMP_NUM = SB.SIGN_PERSON) AS SIGN_PERSON,
+	    SS.STATE_NAME AS SIGN_STATE
+		FROM B_SIGNBOARD SB, B_EMPLOYEE EM, B_SIGN_STATE SS,
+		 (SELECT * FROM B_SIGN WHERE EMP_NUM = #{empNum} ) sign
+		WHERE 1=1  
+		AND SB.EMP_NUM = EM.EMP_NUM(+)
+		AND SS.STATE_NUM = SB.SIGN_STATE
+		AND SB.SEQ = sign.BOARD_NUM
+		AND sign.SIGN_REQUEST = 'Y'
+		AND SB.EMP_NUM not in(#{empNum})
+		<if test='sdate!="" and edate!="" '>
+	       AND reg_date BETWEEN #{sdate} AND #{edate}
+	     </if>
 		
 		
-		]]>
+		ORDER BY SEQ DESC
+		)
+		WHERE 1=1
+		<choose>
+			<when test='search_box == "write"'>
+				AND EMP_NUM LIKE '%'||#{search_text}||'%'
+			</when>
+			<when test='search_box == "subject"'>
+				AND SIGN_SUBJECT LIKE '%'||#{search_text}||'%'
+			</when>
+			<when test='search_box == "singman"'>
+				AND SIGN_PERSON LIKE '%'||#{search_text}||'%'
+			</when>
+			<when test='!sign_box.equals("결재상태")
+						and !sign_box.equals("") '>
+				AND SIGN_STATE = #{sign_box}
+			</when>
+			
+		</choose>
+		
 	</select>
 	
 	<select id="signLine"  parameterType="integer"  resultType="com.project.vo.SignLineVO">
@@ -150,27 +167,119 @@
 		]]>
 	</insert>
 	
-	<select id="signInjsert" parameterType="com.project.vo.SignVO">
+	<insert id="signInjsert" parameterType="map">
+		
 		INSERT INTO B_SIGN
 		(
-			SEQ,
-			SIGN_STATE,
-			EMP_NUM,
-			SIGN_DATE,
-			SIGN_TEXT,
-			BOARD_NUM
-				
-		)
-		VALUES
+		    SIGN_REQUEST,
+		    EMP_NUM,
+		    SIGN_DATE,
+		    SIGN_TEXT,
+		    BOARD_NUM,
+		    SIGN_YN
+		) 
+		    SELECT 
+		    CASE SING_FLAG
+		    WHEN 1 
+		    THEN 'Y'
+		    ELSE 'N'
+		    END AS SIGN_REQUEST,
+		    EMP_NUM,
+		    null AS SIGN_DATE,
+		    null AS SIGN_TEXT,
+		    #{boardNum} AS BOARD_NUM,
+		    null AS SIGN_YN
+		    FROM B_SIGN_LIST
+		    WHERE DEPARTMANT_NUM =
+		    (
+		        SELECT DEPARTMENT_NUM FROM B_EMPLOYEE
+		        WHERE EMP_NUM = #{empNum}
+		    )
+		
+		
+	</insert>
+	
+	<insert id="mySignInjsert" parameterType="map">
+		
+		INSERT INTO B_SIGN
 		(
-			 (SELECT NVL(MAX(SEQ),0) + 1 FROM B_SIGN),
-			 #{signState},
-			 #{empNum},
-			 SYSDATE,
-			 #{signText},
-			 #{boardNum}
-		)
+		    SIGN_REQUEST,
+		    EMP_NUM,
+		    SIGN_DATE,
+		    SIGN_TEXT,
+		    BOARD_NUM,
+		    SIGN_YN
+		) 
+		    SELECT 
+		    'Y' AS SIGN_REQUEST,
+		    #{empNum} AS EMP_NUM,
+		    SYSDATE AS SIGN_DATE,
+		    null AS SIGN_TEXT,
+		    #{boardNum} AS BOARD_NUM,
+		    'Y' AS SIGN_YN
+		    FROM SYS.DUAL
+	</insert>
+	
+	
+	<update id="boardUpdate" parameterType="com.project.vo.SignBoardVO">
+		
+		<choose>
+			<when test='empNum.equals("")'>
+			UPDATE B_SIGNBOARD
+			SET SIGN_STATE = #{signState}
+			WHERE SEQ = #{seq}
+			</when>
+			<otherwise>
+			UPDATE B_SIGNBOARD
+			SET SIGN_STATE = #{signState},
+				SIGN_DATE = SYSDATE,
+				SIGN_PERSON = #{empNum}
+			WHERE SEQ = #{seq}
+			</otherwise>
+		</choose>
+		
+		
+	</update>
+	
+	<update id="signUpdate" parameterType="map">
+		
+		UPDATE B_SIGN
+		SET SIGN_YN = #{signState}
+		WHERE EMP_NUM = #{empNum}
+		AND BOARD_NUM= #{boardNum}
+	
+	</update>
+	
+	<update id="nextSignUpdate" parameterType="map">
+		UPDATE 
+	    (SELECT * FROM B_SIGN
+	    WHERE EMP_NUM = (
+	        SELECT EMP_NUM FROM B_SIGN_LIST
+	        WHERE SING_FLAG = (
+	        SELECT SING_FLAG FROM B_SIGN_LIST
+	        WHERE EMP_NUM=#{empNum} ) +1 )
+	    AND BOARD_NUM = #{boardNum} ) A
+		SET A.SIGN_REQUEST = 'Y'
+	</update>
+	
+	<select id="signList" parameterType="integer" resultType="com.project.vo.SignVO">
+	
+		SELECT * FROM
+		B_SIGN
+		WHERE BOARD_NUM = #{boardNum}
+		ORDER BY EMP_NUM
 		
 	</select>
 	
+	<select id="lastSignCount" parameterType="integer" resultType="integer">
+		SELECT COUNT(*) FROM B_SIGN_LIST
+		WHERE EMP_NUM = #{empNum}
+		AND SING_FLAG = (SELECT MAX(SING_FLAG) FROM B_SIGN_LIST)
+	</select>
+	
+	
+	<select id="nameSearch" parameterType="string" resultType="integer">
+	
+	
+	</select>
 </mapper>

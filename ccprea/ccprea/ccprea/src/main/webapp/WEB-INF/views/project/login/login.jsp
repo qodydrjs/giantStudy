@@ -14,7 +14,7 @@
 		var msg = '${msg}';
 		
 		if(msg=='Failed'){
-			alert("등록되지 않은 사용자입니다.");
+			alert("아이디나 비밀번호를 확인해주세요.");
 		}
 		
 		$('#loginBtn').click(function(){
@@ -62,14 +62,27 @@
 </head>
 <body>
 
+
+
 	<form id="loginfrm" name="loginfrm">
-	<label for="ID">아이디: </label>
-	<input type="text" name="empNum" id="empNum" size="20">
-	<br>
-	<label for="ID">비밀번호: </label>
-	<input type="password" name="password" id="password" size="20">
-	<br>
-	<input type="button" name="loginBtn" id="loginBtn" value="로그인">
+	
+	<table>
+		<tr>
+			<td align="center" colspan="2"><h1>로그인</h1></td>
+		</tr>
+		<tr>
+			<td><label for="ID">아이디: </label></td>
+			<td><input type="text" name="empNum" id="empNum" size="20" placeholder = "아이디를 입력하세요"></td>
+		</tr>
+		<tr>
+			<td><label for="ID">비밀번호: </label></td>
+			<td><input type="password" name="password" id="password" size="20" placeholder = "비밀번호를 입력하세요"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="button" name="loginBtn" id="loginBtn" value="로그인"></td>
+		</tr>
+	</table>
+
 	</form>
 </body>
 </html>

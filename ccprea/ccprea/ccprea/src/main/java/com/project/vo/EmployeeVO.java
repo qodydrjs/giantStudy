@@ -11,7 +11,7 @@ public class EmployeeVO {
 	private Date entryDay;
 	private Date leaveDay;
 	private String password;
-	private int rankSeq;
+	private String rankSeq;
 	
 	
 	public int getSeq() {
@@ -63,10 +63,10 @@ public class EmployeeVO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getRankSeq() {
+	public String getRankSeq() {
 		return rankSeq;
 	}
-	public void setRankSeq(int rankSeq) {
+	public void setRankSeq(String rankSeq) {
 		this.rankSeq = rankSeq;
 	}
 

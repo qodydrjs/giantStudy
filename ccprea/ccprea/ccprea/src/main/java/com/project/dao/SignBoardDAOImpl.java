@@ -2,6 +2,7 @@ package com.project.dao;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -18,9 +19,9 @@ public class SignBoardDAOImpl implements SignBoardDAO{
 	private SqlSession session;
 	
 	@Override
-	public List<SignBoardVO> list(int no) {
+	public List<SignBoardVO> list(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return session.selectList(namespace+".list",no);
+		return session.selectList(namespace+".list",map);
 	}
 
 	@Override
@@ -36,9 +37,9 @@ public class SignBoardDAOImpl implements SignBoardDAO{
 	}
 
 	@Override
-	public int signInjsert(SignVO vo) {
+	public int signInjsert(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return session.insert(namespace+".signInjsert", vo);
+		return session.insert(namespace+".signInjsert", map);
 	}
 
 	@Override
@@ -52,5 +53,48 @@ public class SignBoardDAOImpl implements SignBoardDAO{
 		// TODO Auto-generated method stub
 		return session.selectList(namespace+".signLine", seq);
 	}
+
+	@Override
+	public int mySignInjsert(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return session.insert(namespace+".mySignInjsert", map);
+	}
+
+	@Override
+	public int BoardUpdate(SignBoardVO vo) {
+		// TODO Auto-generated method stub
+		return session.update(namespace+".boardUpdate", vo);
+	}
+
+	@Override
+	public int signUpdate(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return session.update(namespace+".signUpdate", map);
+	}
+
+	@Override
+	public int nextSignUpdate(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return session.update(namespace+".nextSignUpdate",map);
+	}
+
+	@Override
+	public List<SignVO> signlist(int no) {
+		// TODO Auto-generated method stub
+		return session.selectList(namespace+".signList", no);
+	}
+
+	@Override
+	public int lastSignCount(int no) {
+		// TODO Auto-generated method stub
+		return session.selectOne(namespace+".lastSignCount",no);
+	}
+
+	@Override
+	public int nameSearch(String name) {
+		// TODO Auto-generated method stub
+		return session.selectOne(namespace+".nameSearch", name);
+	}
+
 
 }

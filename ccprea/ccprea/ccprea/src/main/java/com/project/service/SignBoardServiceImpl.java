@@ -1,6 +1,7 @@
 package com.project.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -18,9 +19,9 @@ public class SignBoardServiceImpl implements SignBoardService{
 	private SignBoardDAO dao;
 	
 	@Override
-	public List<SignBoardVO> list(int no) {
+	public List<SignBoardVO> list(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return dao.list(no);
+		return dao.list(map);
 	}
 
 	@Override
@@ -36,9 +37,9 @@ public class SignBoardServiceImpl implements SignBoardService{
 	}
 
 	@Override
-	public int signInjsert(SignVO vo) {
+	public int signInjsert(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return dao.signInjsert(vo);
+		return dao.signInjsert(map);
 	}
 
 	@Override
@@ -51,6 +52,48 @@ public class SignBoardServiceImpl implements SignBoardService{
 	public List<SignLineVO> signLine(int seq) {
 		// TODO Auto-generated method stub
 		return dao.signLine(seq);
+	}
+
+	@Override
+	public int mySignInjsert(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return dao.mySignInjsert(map);
+	}
+
+	@Override
+	public int BoardUpdate(SignBoardVO vo) {
+		// TODO Auto-generated method stub
+		return dao.BoardUpdate(vo);
+	}
+
+	@Override
+	public int signUpdate(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return dao.signUpdate(map);
+	}
+
+	@Override
+	public int nextSignUpdate(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return dao.nextSignUpdate(map);
+	}
+
+	@Override
+	public List<SignVO> signlist(int no) {
+		// TODO Auto-generated method stub
+		return dao.signlist(no);
+	}
+
+	@Override
+	public int lastSignCount(int no) {
+		// TODO Auto-generated method stub
+		return dao.lastSignCount(no);
+	}
+
+	@Override
+	public int nameSearch(String name) {
+		// TODO Auto-generated method stub
+		return dao.nameSearch(name);
 	}
 	
 }
