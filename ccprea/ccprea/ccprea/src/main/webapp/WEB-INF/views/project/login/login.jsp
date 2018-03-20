@@ -17,6 +17,11 @@
 			alert("아이디나 비밀번호를 확인해주세요.");
 		}
 		
+		/* else if(msg='SessionError'){
+			alert("로그인 정보가 없습니다.");
+		} */
+
+		
 		$('#loginBtn').click(function(){
 			var empNum = $('#empNum');
 			var password = $('#password');

@@ -2,6 +2,7 @@ package com.project.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.project.vo.EmployeeVO;
 import com.project.vo.SignBoardVO;
 import com.project.vo.SignLineVO;
 import com.project.vo.SignVO;
@@ -26,4 +27,8 @@ public interface SignBoardDAO {
 	
 	
 	public int nameSearch(String name);
+	
+	public List<EmployeeVO> emplist();
+	
+	
 }

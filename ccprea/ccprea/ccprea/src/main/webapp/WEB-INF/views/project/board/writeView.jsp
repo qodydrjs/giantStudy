@@ -27,7 +27,7 @@
 			
 			var frmObj = $('form[id=sign_frm]');
 			
-			frmObj.attr("action","write")
+			frmObj.attr("action","writeSignBoard")
 			frmObj.attr("method","POST");
 			frmObj.submit();
 			
@@ -40,7 +40,7 @@
 			
 			var frmObj = $('form[id=sign_frm]');
 			
-			frmObj.attr("action","write")
+			frmObj.attr("action","writeSignBoard")
 			frmObj.attr("method","POST");
 			frmObj.submit();
 			
@@ -53,7 +53,7 @@
 			
 			var frmObj = $('form[id=sign_frm]');
 			
-			frmObj.attr("action","write")
+			frmObj.attr("action","writeSignBoard")
 			frmObj.attr("method","POST");
 			frmObj.submit();
 			
@@ -76,10 +76,7 @@
 
 <input type="button" value="목록" id="list_btn">
 <br>
-
-<div>
-
-	<table border="1">
+	<%-- <table border="1">
 		<tr>
 			<th>
 			결재요청:
@@ -95,7 +92,7 @@
 				<c:if test="${not empty line[1].EMP_NAME }"> ${line[1].EMP_NAME }</c:if>
 			</th>
 		</tr>
-		<!--아래의 체크박스 signlist 를 Foreach 문으로 재 구현 필요 -->
+		
 		<tr>
 			<th>
 				<c:if test="${empty signlist[0].SIGN_YN }"> 
@@ -128,11 +125,35 @@
 				</c:if>
 			</th>
 		</tr>
-		
-	
 	</table>
-</div>
-
+ --%>
+ 	<table border="1">
+ 		
+ 		<c:forEach items="${signlist}" var="list" varStatus="status">
+ 		
+ 			<c:choose>
+ 				<c:when test="${status.index == 0 }">
+ 					<tr>
+	 					<td>결재요청</td>
+	 					<td><input type="checkbox"
+	 						<c:if test="${list.SIGN_YN=='Y'}">checked="checked" </c:if>
+	 					disabled="disabled"> </td>
+ 					</tr>
+ 				</c:when>
+ 				<c:otherwise>
+ 					<tr>
+	 					<td>${list.RANK_NAME}</td>
+	 					<td><input type="checkbox"
+	 						<c:if test="${list.SIGN_YN=='Y'}">checked="checked" </c:if>
+	 					disabled="disabled"> </td>
+ 					</tr>
+ 				</c:otherwise>
+ 			</c:choose>
+ 		</c:forEach>
+ 	
+ 	
+ 	</table>
+ 
 
 <br>
 
@@ -182,16 +203,26 @@
 	</table>
 <br>
 </form>
-<c:if test ="${not empty list.seq}" >
+
+<c:choose>
+	<c:when test="${not empty list.seq}">
 		<c:if test ="${list.empNum != empName}" >
 			<input type="button" id="ban_btn" name="ban_btn" value="반려">
 		</c:if>
 		<input type="button" id="sing_btn" name="sing_btn" value="결재">
+	</c:when>
+	<c:otherwise>
+		<input type="button" id="save_btn" name="save_btn" value="임시저장">
+		<input type="button" id="sing_btn" name="sing_btn" value="결재">
+
+	</c:otherwise>
+</c:choose>
+<%-- <c:if test ="${not empty list.seq}" >
+		
 </c:if>
 <c:if test ="${empty list.seq}" > 
-	<input type="button" id="save_btn" name="save_btn" value="임시저장">
-	<input type="button" id="sing_btn" name="sing_btn" value="결재">
-</c:if> 
+	
+</c:if>  --%>
 
 
 
@@ -199,14 +230,11 @@
 	<c:if test ="${list.EMP_NUM  == empNum}">
 			<c:if test ="${list.SIGN_YN == 'Y'}"> 
 						<script>
-						
 							$('body input').attr('readonly','readonly');
 							$('body textarea').attr('readonly','readonly');
-							$('#ban_btn').prop('disabled',true);
-							$('#sing_btn').prop('disabled',true);
-							$('#save_btn').prop('disabled',true);
-							
-							
+							$('#ban_btn').hide();
+							$('#sing_btn').hide();
+							$('#save_btn').hide();
 						</script>
 			</c:if>
 	</c:if>

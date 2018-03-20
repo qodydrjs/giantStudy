@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.project.vo.EmployeeVO;
 import com.project.vo.SignBoardVO;
 import com.project.vo.SignLineVO;
 import com.project.vo.SignVO;
@@ -94,6 +95,12 @@ public class SignBoardDAOImpl implements SignBoardDAO{
 	public int nameSearch(String name) {
 		// TODO Auto-generated method stub
 		return session.selectOne(namespace+".nameSearch", name);
+	}
+
+	@Override
+	public List<EmployeeVO> emplist() {
+		// TODO Auto-generated method stub
+		return session.selectList(namespace+".emplist");
 	}
 
 

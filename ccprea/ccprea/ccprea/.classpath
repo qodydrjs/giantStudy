@@ -34,5 +34,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/CCPREA/Downloads/miplatform-3.2-20131014-103450/lib/miplatform-3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/CCPREA/Downloads/miplatform-3.2-20131014-103450/lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

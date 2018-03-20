@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -27,6 +28,14 @@ import com.project.vo.SignLineVO;
 import com.project.vo.SignVO;
 import com.study.domain.BoardListVO;
 
+
+import java.util.*;
+import java.sql.*;
+import java.io.*;
+
+import com.tobesoft.platform.*;
+import com.tobesoft.platform.data.*;
+
 @Controller
 public class ProjectController {
 	
@@ -40,8 +49,68 @@ public class ProjectController {
 	@RequestMapping(value="login" , method=RequestMethod.GET)
 	public String loginGet(Model model){
 		
-		
 		return "project/login/login";
+	}
+	
+	
+	@RequestMapping(value="miview")
+	public void mi(HttpServletResponse response ){
+		
+		 VariableList v1 = new VariableList();
+		 DatasetList d1 = new DatasetList();
+		
+		try{
+			
+		Dataset ds = new Dataset("b_sign");
+		ds.addColumn("EMP_NUM", ColumnInfo.CY_COLINFO_INT, 20);
+		ds.addColumn("EMP_NAME", ColumnInfo.CY_COLINFO_STRING, 20);
+		ds.addColumn("BIRTH_DAY", ColumnInfo.CY_COLINFO_DATE, 20);
+		ds.addColumn("ADDRESS", ColumnInfo.CY_COLINFO_STRING, 20);
+		ds.addColumn("ENTRY_DAY", ColumnInfo.CY_COLINFO_DATE, 20);
+		ds.addColumn("LEAVE_DAY", ColumnInfo.CY_COLINFO_DATE, 20);
+		ds.addColumn("PASSWORD", ColumnInfo.CY_COLINFO_STRING, 20);
+		ds.addColumn("RANK_SEQ", ColumnInfo.CY_COLINFO_INT, 20);
+		ds.addColumn("DEPARTMENT_NUM", ColumnInfo.CY_COLINFO_INT, 20);
+		
+		
+		List<EmployeeVO> list = signBoardService.emplist();
+		
+		while(list.size()){
+			int row = ds.appendRow();
+			ds.setColumn(row, "EMP_NUM", rsGet(rs,"EMP_NUM"));
+			ds.setColumn(row, "EMP_NAME", rsGet(rs,"EMP_NAME"));
+			ds.setColumn(row, "BIRTH_DAY", rsGet(rs,"BIRTH_DAY"));
+			ds.setColumn(row, "ADDRESS", rsGet(rs,"ADDRESS"));
+			ds.setColumn(row, "ENTRY_DAY", rsGet(rs,"ENTRY_DAY"));
+			ds.setColumn(row, "LEAVE_DAY", rsGet(rs,"LEAVE_DAY"));
+			ds.setColumn(row, "PASSWORD", rsGet(rs,"PASSWORD"));
+			ds.setColumn(row, "RANK_SEQ", rsGet(rs,"RANK_SEQ"));
+			ds.setColumn(row, "DEPARTMENT_NUM", rsGet(rs,"DEPARTMENT_NUM"));
+		}
+		
+		d1.addDataset(ds);
+		
+		v1.addStr("ErrorCode", "0");
+		v1.addStr("ErrorMsg", "SUCC");
+		
+		}catch(Exception ex){
+			v1.addStr("ErrorCode", "-1");
+			v1.addStr("ErrorMsg", ex.getMessage());
+		}
+		
+		
+		PlatformResponse pRes = new PlatformResponse(response, PlatformRequest.XML, "euc-kr");
+		pRes.sendData(v1,d1);
+
+	}
+	
+	@RequestMapping(value ="SessionError")
+	public String SessionError(RedirectAttributes rttr){
+		
+		
+		//rttr.addFlashAttribute("msg", "SessionError");
+		
+		return "redirect:login";
 	}
 	
 	@RequestMapping(value="login" , method=RequestMethod.POST)
@@ -64,6 +133,7 @@ public class ProjectController {
 			session.setAttribute("empName", loginInfo.getEmpName());
 			session.setAttribute("empNum", loginInfo.getEmpNum());
 			session.setAttribute("rankName", loginInfo.getRankSeq());
+			session.setAttribute("rankSeq", loginInfo.getRankSeq());
 			
 			return "redirect:singList";
 		}
@@ -79,20 +149,15 @@ public class ProjectController {
 		Map<String, String> map = new HashMap<String, String>();
 		//////////////////////
 
-			String search_box = request.getParameter("search_box") == null ?
-					"" : request.getParameter("search_box");
+			String search_box = request.getParameter("search_box") == null ? "" : request.getParameter("search_box");
 
-			String search_text = request.getParameter("search_text") == null ?
-					"" : request.getParameter("search_text");
+			String search_text = request.getParameter("search_text") == null ? "" : request.getParameter("search_text");
 			
-			String sdate = request.getParameter("sdate") == null ?
-					"" : request.getParameter("sdate");
+			String sdate = request.getParameter("sdate") == null ? "" : request.getParameter("sdate");
 			
-			String edate = request.getParameter("edate") == null ?
-					"" : request.getParameter("edate");
+			String edate = request.getParameter("edate") == null ? "" : request.getParameter("edate");
 			
-			String sign_box = request.getParameter("sign_box") == null ?
-					"" : request.getParameter("sign_box");
+			String sign_box = request.getParameter("sign_box") == null ? "" : request.getParameter("sign_box");
 			
 			map.put("search_box", search_box);
 			map.put("search_text", search_text);
@@ -107,8 +172,10 @@ public class ProjectController {
 		//int no = Integer.parseInt(session.getAttribute("empNum").toString() );
 		
 		List<SignBoardVO> list = signBoardService.list(map);
+		List<EmployeeVO> emplist = signBoardService.emplist();
 		
 		model.addAttribute("list", list);
+		model.addAttribute("emplist", emplist);
 		
 		model.addAttribute("search_box", search_box);
 		model.addAttribute("search_text", search_text);
@@ -153,7 +220,7 @@ public class ProjectController {
 		return "project/board/writeView";
 	}
 	
-	@RequestMapping(value="write" , method=RequestMethod.POST)
+	@RequestMapping(value="writeSignBoard" , method=RequestMethod.POST)
 	public String writePOST(RedirectAttributes rttr,
 		HttpServletRequest request,
 		SignBoardVO vo,

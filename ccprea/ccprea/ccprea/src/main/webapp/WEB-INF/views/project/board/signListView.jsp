@@ -56,7 +56,7 @@
 		
 		$('#search_btn').click(function(){
 			
-			var frm = $('#frm_search')
+			var frm = $('#frm_search');
 			frm.attr("action","singList");
 			frm.attr("method","POST");
 			frm.submit();
@@ -75,6 +75,72 @@
 			$('#frm_sign').attr("method","POST");
 			$('#frm_sign').submit();
 		})
+		
+		
+		 $( "#dialog" ).dialog({
+		      autoOpen: false,
+		      show: {
+		        effect: "blind",
+		        duration: 1000
+		      },
+		      hide: {
+		        effect: "blind",
+		        duration: 1000
+		      }
+		    });
+		 
+		    $( "#sign_btn" ).on( "click", function() {
+		      $( "#dialog" ).dialog( "open" );
+		    });
+		    
+		 $('#sign_select').change(function(){
+			 
+			 
+			 var optionSelected = $(this).find("option:selected");
+			 var valueSelected  = optionSelected.val();
+			 var textSelected   = optionSelected.text();
+			
+			 if(textSelected != '선택'){
+					 
+				 var rank_txt = $('#r_'+textSelected).val();
+				 var deputy_txt = $('#d_'+textSelected).val();
+				 var deputy_seq = $('#s_'+textSelected).val();
+				 
+				 $('#rank_txt').val(rank_txt);
+				 $('#deputy_txt').val(deputy_txt);
+				 $('#deputy_seq').val(deputy_seq);
+			
+			 }
+			 
+			 
+		 })
+		 
+		 
+		 
+		 $('#btn_deputy').click(function(){
+			
+			 var deputydata = $('#deputy_seq').val();
+			 
+			$.ajax({
+				
+				data:deputydata,
+				type:"POST",
+				url:"/deputy",
+				datatype:"text",
+				success:function(data){
+					
+					alert('성공');
+					
+				},
+				error:function(data){
+					
+					alert('실패');
+				}
+			
+			});
+			 
+		 })
+		
 	})
 	
 	function updateSignBoard(no){
@@ -101,6 +167,59 @@
 <div>
 	<input type="button" value="글쓰기" id="write_btn" >
 	
+	<c:if test="${rankSeq == '부장' or rankSeq =='과장' }">
+		<input type="button" value="대리결재" id="sign_btn">
+	</c:if>
+	
+	
+	<div id="dialog" title="대리결재 선택">
+  	
+  	<table>
+  		<tr>
+  			<td><label>대리결재자:</label></td>
+  			<td>
+  				<select id="sign_select">
+  					<option value="all">선택</option>
+	  			<c:forEach items="${emplist }" var="list" varStatus="status">
+	  				<option value="${status.index }">${list.empName }</option>
+	  			</c:forEach>
+	  			</select>
+  			</td>
+  		</tr>
+  			
+  		<tr>
+  			<td>
+  				<label>직급:</label>
+  			</td>
+  			<td>
+  				<input type="text" id="rank_txt" name="rank_txt" readonly="readonly">
+  			</td>
+  		</tr>
+  		<tr>
+  			<td>
+  				<label>대리자:</label>
+  			</td>
+  			<td>
+  				<input type="text" id="deputy_txt" name="deputy_txt" readonly="readonly">
+  			</td>
+  		</tr>
+  	</table>
+  	
+  		<c:forEach items="${emplist }" var="list" varStatus="status">
+	  				<input type="hidden" id="r_${list.empName}" value="${list.rankSeq }">
+	  				<input type="hidden" id="d_${list.empName}" value="${list.empName }">
+	  				<input type="hidden" id="s_${list.empName}" value="${list.seq }">
+	  	</c:forEach>
+  	
+  	
+  	<form id="frm_deputy">
+  		<input type="hidden" id="deputy_seq" name="deputy_seq" readonly="readonly">
+  	</form>
+  	
+  	<input type="button" id="btn_close"  value="취소">
+  	<input type="button" id="btn_deputy" value="승인">
+	</div>
+
 </div>
 <br>
 <form id = frm_sign>

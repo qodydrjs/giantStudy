@@ -21,7 +21,37 @@
 		  <result property="nextSign" column="NEXT_SIGN"/>
 	</resultMap>
 	
+	
+	<resultMap id="EmployeeVO" type="com.project.vo.EmployeeVO" autoMapping="true">
+		  <result property="seq" column="SEQ"/>
+		  <result property="empNum" column="EMP_NUM"/>
+		  <result property="empName" column="EMP_NAME"/>
+		  <result property="birthDay" column="BIRTH_DAY"/>
+		  <result property="address" column="ADDRESS"/>
+		  <result property="entryDay" column="ENTRY_DAY"/>
+		  <result property="leaveDay" column="LEAVE_DAY"/>
+		  <result property="password" column="PASSWORD"/>
+		  <result property="rankSeq" column="RANK_SEQ"/>
+	</resultMap>
+	
 
+
+	<select id="emplist"  resultMap="EmployeeVO">
+	
+		SELECT 
+		    B_EMPLOYEE.EMP_NUM,
+		    B_EMPLOYEE.EMP_NAME,
+		    B_EMPLOYEE.DEPARTMENT_NUM,
+		    B_EMPLOYEE.ADDRESS,
+		    B_EMPLOYEE.ENTRY_DAY,
+		    B_EMPLOYEE.LEAVE_DAY,
+		    B_RANK.RANK_NAME AS RANK_SEQ
+		FROM
+		B_EMPLOYEE,B_RANK
+		WHERE b_rank.rank_seq(+) = B_EMPLOYEE.RANK_SEQ
+		ORDER BY B_EMPLOYEE.EMP_NUM
+	
+	</select>
 	
 	<select id="listSeq" parameterType="integer" resultMap="SignBoardVO">
 	
@@ -68,15 +98,15 @@
 	    union ALL
 
         SELECT 
-	    SB.SEQ,
-	    EM.EMP_NAME AS EMP_NUM,
-	    SB.SIGN_SUBJECT,
-	    SB.SIGN_CONTENT,
-	    SB.REG_DATE,
-	    SB.SIGN_DATE,
-	    (SELECT EMP_NAME FROM B_EMPLOYEE
-	    WHERE EMP_NUM = SB.SIGN_PERSON) AS SIGN_PERSON,
-	    SS.STATE_NAME AS SIGN_STATE
+		    SB.SEQ,
+		    EM.EMP_NAME AS EMP_NUM,
+		    SB.SIGN_SUBJECT,
+		    SB.SIGN_CONTENT,
+		    SB.REG_DATE,
+		    SB.SIGN_DATE,
+		    (SELECT EMP_NAME FROM B_EMPLOYEE
+		    WHERE EMP_NUM = SB.SIGN_PERSON) AS SIGN_PERSON,
+		    SS.STATE_NAME AS SIGN_STATE
 		FROM B_SIGNBOARD SB, B_EMPLOYEE EM, B_SIGN_STATE SS,
 		 (SELECT * FROM B_SIGN WHERE EMP_NUM = #{empNum} ) sign
 		WHERE 1=1  
@@ -179,22 +209,30 @@
 		    SIGN_YN
 		) 
 		    SELECT 
-		    CASE SING_FLAG
-		    WHEN 1 
-		    THEN 'Y'
-		    ELSE 'N'
-		    END AS SIGN_REQUEST,
-		    EMP_NUM,
-		    null AS SIGN_DATE,
-		    null AS SIGN_TEXT,
-		    #{boardNum} AS BOARD_NUM,
-		    null AS SIGN_YN
-		    FROM B_SIGN_LIST
-		    WHERE DEPARTMANT_NUM =
-		    (
-		        SELECT DEPARTMENT_NUM FROM B_EMPLOYEE
-		        WHERE EMP_NUM = #{empNum}
-		    )
+			CASE 
+			WHEN BSL.SING_FLAG = (
+			                            SELECT 
+			                                    MIN(SING_FLAG) 
+			                            FROM B_SIGN_LIST WHERE  B_SIGN_LIST.DEPARTMANT_NUM = 
+			                                    (
+			                                        SELECT DEPARTMENT_NUM FROM B_EMPLOYEE
+			                                        WHERE EMP_NUM = #{empNum}
+			                                    )
+			                     )
+			THEN 'Y' 
+			ELSE 'N'
+			END AS SIGN_REQUEST,
+			BSL.EMP_NUM,
+			null AS SIGN_DATE,
+			null AS SIGN_TEXT,
+			#{boardNum} AS BOARD_NUM,
+			null AS SIGN_YN
+			FROM B_SIGN_LIST BSL
+			WHERE DEPARTMANT_NUM =
+			(
+			    SELECT DEPARTMENT_NUM FROM B_EMPLOYEE
+			    WHERE EMP_NUM = #{empNum}
+			)
 		
 		
 	</insert>
@@ -253,21 +291,37 @@
 	<update id="nextSignUpdate" parameterType="map">
 		UPDATE 
 	    (SELECT * FROM B_SIGN
-	    WHERE EMP_NUM = (
-	        SELECT EMP_NUM FROM B_SIGN_LIST
-	        WHERE SING_FLAG = (
-	        SELECT SING_FLAG FROM B_SIGN_LIST
-	        WHERE EMP_NUM=#{empNum} ) +1 )
+	    WHERE EMP_NUM = 
+	    (
+	        	SELECT EMP_NUM FROM B_SIGN_LIST
+	        	WHERE SING_FLAG = 
+		        (
+		        	SELECT SING_FLAG +1 FROM B_SIGN_LIST
+		        	WHERE EMP_NUM=#{empNum} 
+		    	)
+	    )
 	    AND BOARD_NUM = #{boardNum} ) A
 		SET A.SIGN_REQUEST = 'Y'
 	</update>
 	
 	<select id="signList" parameterType="integer" resultType="com.project.vo.SignVO">
 	
-		SELECT * FROM
-		B_SIGN
-		WHERE BOARD_NUM = #{boardNum}
-		ORDER BY EMP_NUM
+		SELECT 
+		    BS.SIGN_REQUEST,
+		    BS.EMP_NUM,
+		    BS.SIGN_DATE,
+		    BS.SIGN_TEXT,
+		    BS.BOARD_NUM,
+		    BS.SIGN_YN,
+		    EMP.EMP_NAME,
+		    BR.RANK_NAME
+		FROM
+		    B_SIGN BS , B_EMPLOYEE EMP, B_RANK BR
+		WHERE 1=1
+		AND BS.EMP_NUM = EMP.EMP_NUM(+)
+		AND EMP.RANK_SEQ = BR.RANK_SEQ
+		AND BOARD_NUM = #{boardNum}
+		ORDER BY BS.EMP_NUM
 		
 	</select>
 	
