@@ -11,6 +11,7 @@
 <script src="/resources/js/jquery-ui.js"></script>
 <link rel="stylesheet" href = /resources/css/jquery-ui.css type="text/css">
 
+
 <script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -148,6 +149,13 @@
 		location.href = "write?no="+no;
 		
 	}
+	
+	function exceldown(){
+		
+		
+		location.href = "exceldown";
+		
+	}
 
 </script>
 
@@ -171,6 +179,9 @@
 		<input type="button" value="대리결재" id="sign_btn">
 	</c:if>
 	
+	<input type="button" value="엑셀다운로드" onclick="exceldown()">
+	
+	<img height="100" border="1" alt="" src="/resources/image/Hydrangeas.jpg"/>
 	
 	<div id="dialog" title="대리결재 선택">
   	

@@ -98,9 +98,27 @@ public class SignBoardServiceImpl implements SignBoardService{
 	}
 
 	@Override
-	public List<EmployeeVO> emplist() {
+	public List<EmployeeVO> emplist(Map<String,Object> map) {
 		// TODO Auto-generated method stub
-		return dao.emplist();
+		return dao.emplist(map);
+	}
+
+	@Override
+	public int emp_insert(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.emp_insert(map);
+	}
+
+	@Override
+	public int emp_delete(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.emp_delete(map);
+	}
+
+	@Override
+	public int emp_update(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.emp_update(map);
 	}
 	
 }

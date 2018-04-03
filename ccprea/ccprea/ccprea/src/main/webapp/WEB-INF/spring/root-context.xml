@@ -35,9 +35,16 @@
   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"  destroy-method="clearCache">
    <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
   </bean>
-    
-    
-    
+  
+  
+  <!-- File Download Class Bean -->
+  <bean id="Download" class="com.project.down.Download"/>
+  
+  <!-- JSON -->
+  <bean id="jacksonMessageConverter" 
+  		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+
+
     <context:component-scan base-package="com.study.persistence" />
 	<context:component-scan base-package="com.study.service" />
 	<context:component-scan base-package="com.project.service" />

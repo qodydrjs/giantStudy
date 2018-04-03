@@ -36,7 +36,7 @@
 	
 
 
-	<select id="emplist"  resultMap="EmployeeVO">
+	<select id="emplist"  parameterType="map" resultMap="EmployeeVO">
 	
 		SELECT 
 		    B_EMPLOYEE.EMP_NUM,
@@ -45,10 +45,28 @@
 		    B_EMPLOYEE.ADDRESS,
 		    B_EMPLOYEE.ENTRY_DAY,
 		    B_EMPLOYEE.LEAVE_DAY,
+		    B_EMPLOYEE.BIRTH_DAY,
+		    B_EMPLOYEE.PASSWORD,
 		    B_RANK.RANK_NAME AS RANK_SEQ
 		FROM
 		B_EMPLOYEE,B_RANK
-		WHERE b_rank.rank_seq(+) = B_EMPLOYEE.RANK_SEQ
+		WHERE 1=1 
+		AND b_rank.rank_seq(+) = B_EMPLOYEE.RANK_SEQ
+		<if test="str_search != null">
+			<choose>
+				<when test='str_search=="name"'>
+					AND B_EMPLOYEE.EMP_NAME LIKE '%'||#{str_content}||'%'
+				</when>
+				<when test="str_search == 'num'">
+					AND B_EMPLOYEE.EMP_NUM LIKE '%'||#{str_content}||'%'
+				</when>
+				<when test="str_search == 'address'">
+					AND B_EMPLOYEE.ADDRESS LIKE '%'||#{str_content}||'%'
+				</when>
+			</choose>
+		</if>
+		
+		
 		ORDER BY B_EMPLOYEE.EMP_NUM
 	
 	</select>
@@ -336,4 +354,49 @@
 	
 	
 	</select>
+	
+	<insert id="emp_insert">
+		INSERT INTO B_EMPLOYEE
+		(
+			EMP_NUM,
+		    EMP_NAME ,
+		   	BIRTH_DAY, 
+		    ADDRESS ,
+		    
+		    PASSWORD ,
+		    RANK_SEQ ,
+		    DEPARTMENT_NUM 
+		)
+		VALUES
+		(
+			#{EMP_NUM},
+			#{EMP_NAME} ,
+		    #{BIRTH_DAY},
+		    #{ADDRESS} ,
+		    
+		    #{PASSWORD} ,
+		    #{RANK_SEQ} ,
+		    #{DEPARTMENT_NUM} 
+		
+		)
+	
+	</insert>
+	
+	<delete id="emp_delete">
+		
+		Delete B_EMPLOYEE
+		WHERE EMP_NUM = #{EMP_NUM}
+	
+	</delete>
+	
+	<update id="emp_update">
+	
+		Update B_EMPLOYEE
+		SET 
+		    EMP_NAME = #{EMP_NAME} ,
+		    ADDRESS = #{ADDRESS} ,
+		    PASSWORD = #{PASSWORD}
+		WHERE EMP_NUM = #{EMP_NUM}
+		
+	</update>
 </mapper>

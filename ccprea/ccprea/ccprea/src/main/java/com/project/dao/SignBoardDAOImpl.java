@@ -98,9 +98,27 @@ public class SignBoardDAOImpl implements SignBoardDAO{
 	}
 
 	@Override
-	public List<EmployeeVO> emplist() {
+	public List<EmployeeVO> emplist(Map<String,Object> map) {
 		// TODO Auto-generated method stub
-		return session.selectList(namespace+".emplist");
+		return session.selectList(namespace+".emplist",map);
+	}
+
+	@Override
+	public int emp_insert(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return session.insert(namespace+".emp_insert",map);
+	}
+
+	@Override
+	public int emp_delete(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return session.delete(namespace+".emp_delete",map);
+	}
+
+	@Override
+	public int emp_update(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return session.update(namespace+".emp_update",map);
 	}
 
 

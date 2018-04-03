@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employeeMapper">
+
+	<resultMap type="com.Plant.vo.EmployeeVO" id="EmployeeVO">
+		
+		<result column="EMP_NUM" property="empNum" />
+		<result column="EMP_NAME" property="empName" />
+		<result column="BIRTH_DAY" property="birthDay" />
+		<result column="ADDRESS" property="address" />
+		<result column="ENTRY_DAY" property="entryDay" />
+		<result column="LEAVE_DAY" property="leaveDay" />
+		<result column="PASSWORD" property="password" />
+		<result column="RANK_SEQ" property="rankSeq" />
+		<result column="DEPARTMENT_NUM" property="departmentNum" />
+	</resultMap>
+
+  <select id="employeeAll" resultMap="EmployeeVO">
+    select * from B_EMPLOYEE
+  </select>
+</mapper>

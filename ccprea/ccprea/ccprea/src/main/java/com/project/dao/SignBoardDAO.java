@@ -28,7 +28,10 @@ public interface SignBoardDAO {
 	
 	public int nameSearch(String name);
 	
-	public List<EmployeeVO> emplist();
+	public List<EmployeeVO> emplist(Map<String,Object> map);
+	public int emp_insert(Map<String,Object> map);
+	public int emp_delete(Map<String,Object> map);
+	public int emp_update(Map<String,Object> map);
 	
 	
 }

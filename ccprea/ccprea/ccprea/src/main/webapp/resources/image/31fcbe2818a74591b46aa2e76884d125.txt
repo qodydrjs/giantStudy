@@ -1,0 +1,17 @@
+SELECT 
+		    CASE SING_FLAG
+		    WHEN 1 
+		    THEN 'Y'
+		    ELSE 'N'
+		    END AS SIGN_REQUEST,
+		    EMP_NUM,
+		    null AS SIGN_DATE,
+		    null AS SIGN_TEXT,
+		    16 AS BOARD_NUM,
+		    null AS SIGN_YN
+		    FROM B_SIGN_LIST
+		    WHERE DEPARTMANT_NUM =
+		    (
+		        SELECT DEPARTMENT_NUM FROM B_EMPLOYEE
+		        WHERE EMP_NUM = 30001
+		    )

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="file_mapper">
+
+	<resultMap type="com.project.vo.FileVO" id="fileVO">
+	
+		<result column="SEQ" property="seq" />
+		<result column="ORIG_NAME" property="origName" />
+		<result column="SFILE" property="sfile" />
+		<result column="LOCALFILE" property="localfile" />
+		<result column="BOARD_NUM" property="boardNum" />
+	
+	</resultMap>
+
+
+	<insert id="fileInsert" parameterType="com.project.vo.FileVO">
+		
+		INSERT INTO B_FILE
+		VALUES(
+				   (SELECT NVL(MAX(SEQ),0)+1 FROM B_FILE)
+				  ,#{origName}
+				  ,#{sfile}
+				  ,#{boardNum}
+				  ,#{localfile}
+			  )
+	
+	</insert>
+	
+	<select id="fileList" resultMap="fileVO">
+	
+		SELECT * FROM B_FILE
+	
+	</select>
+
+</mapper>
