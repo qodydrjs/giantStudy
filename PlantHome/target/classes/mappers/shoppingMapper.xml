@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shoppingMapper">
+
+	<resultMap type="com.Plant.vo.ShoppingListVO" id="ShoppingListVO">
+		
+		<result column="SEQ" property="seq" />
+		<result column="GOODS_NAME" property="goodsName" />
+		<result column="GOODS_INFO" property="goodsInfo" />
+		<result column="GOODS_QUANTITY" property="goodsQuantity" />
+		<result column="GOODS_PRICE" property="goodsPrice" />
+		<result column="GOODS_SELLER" property="goodsSeller" />
+		<result column="GOODS_IMAGE_URL" property="goodsImageUrl"/>
+	</resultMap>
+	
+	
+	<resultMap type="com.Plant.vo.ShoppingBasketVO" id="ShoppingBasketVO">
+		
+		<result column="SEQ" property="seq" />
+		<result column="EMP_NUM" property="empNum" />
+		<result column="GOODS_SEQ" property="goodsSeq" />
+		<result column="QUANTITY" property="quantity" />
+	</resultMap>
+	
+	
+	<resultMap type="com.Plant.vo.ShoppingBasketListVO" id="ShoppingBasketListVO">
+		
+		<result column="SEQ" property="seq" />
+		<result column="GOODS_NAME" property="goodsName" />
+		<result column="GOODS_INFO" property="goodsInfo" />
+		<result column="GOODS_QUANTITY" property="goodsQuantity" />
+		<result column="GOODS_PRICE" property="goodsPrice" />
+		<result column="GOODS_SELLER" property="goodsSeller" />
+		<result column="GOODS_IMAGE_URL" property="goodsImageUrl"/>
+		<result column="ORDER_NUM" property="orderNum" />
+		<result column="EMP_NUM" property="empNum" />
+		<result column="GOODS_SEQ" property="goodsSeq" />
+		<result column="QUANTITY" property="quantity" />
+		
+	</resultMap>
+	
+
+  <select id="shoppingListAll" resultMap="ShoppingListVO">
+    SELECT
+    	 SEQ
+    	,GOODS_NAME
+    	,GOODS_INFO
+    	,GOODS_QUANTITY
+    	,GOODS_PRICE
+    	,GOODS_SELLER
+    	,GOODS_IMAGE_URL
+    FROM B_SHOPPING_LIST
+  </select>
+  
+  
+  <select id="myshoppingBasketList" parameterType="int" resultMap="ShoppingBasketListVO">
+ 	SELECT
+     bsl.SEQ
+    ,bsl.GOODS_NAME
+    ,bsl.GOODS_INFO
+    ,bsl.GOODS_PRICE
+    ,bsl.GOODS_SELLER
+    ,bsl.GOODS_IMAGE_URL
+    ,bsb.SEQ AS ORDER_NUM
+    ,bsb.EMP_NUM
+    ,bsb.GOODS_SEQ
+    ,bsb.QUANTITY
+	FROM B_SHOPPING_LIST bsl , B_SHOPPING_BASKET bsb
+	WHERE bsl.SEQ(+) = bsb.GOODS_SEQ
+	AND bsb.EMP_NUM = #{empNum}
+	ORDER BY ORDER_NUM DESC , bsb.GOODS_SEQ
+ 		
+  </select>
+  
+  
+  <!--  
+  <select id="shoppingBasketList" parameterType="int" resultMap="ShoppingBasketVO">
+ 	SELECT 
+ 		SEQ
+		,EMP_NUM
+		,GOODS_SEQ
+		,QUANTITY
+	FROM
+		B_SHOPPING_BASKET
+	WHERE 1=1
+	AND EMP_NUM = #{empNum}	
+  </select>
+  
+  -->
+  
+  
+  <insert id="insert_myshoppingBasket" parameterType="map">
+  
+  	INSERT INTO B_SHOPPING_BASKET
+ 		(SEQ
+		,EMP_NUM
+		,GOODS_SEQ
+		,QUANTITY)
+	VALUES
+		(#{list.seq}
+		,#{list.empNum}
+		,#{list.goodsSeq}
+		,#{list.quantity})
+
+  	
+  </insert>
+  
+
+</mapper>

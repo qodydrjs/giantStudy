@@ -20,4 +20,14 @@
   <select id="employeeAll" resultMap="EmployeeVO">
     select * from B_EMPLOYEE
   </select>
+  
+  
+  <select id="employeeCheck" parameterType="hashmap" resultMap="EmployeeVO">
+  
+  	select * from B_EMPLOYEE
+  	WHERE 1=1
+  	AND EMP_NUM = #{id}
+  	AND PASSWORD = #{password}
+  
+  </select>
 </mapper>

@@ -17,7 +17,7 @@
 			
 			var frm = $('#frm_member');
 			
-			frm.attr( "action","/loginCheck");
+			frm.attr( "action","/loginc/loginCheck");
 			frm.attr("method","post");
 			frm.submit();
 			
