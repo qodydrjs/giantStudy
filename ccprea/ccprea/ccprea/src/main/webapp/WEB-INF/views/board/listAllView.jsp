@@ -12,6 +12,8 @@
 <script src="/resources/js/jquery-3.3.1.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <link rel="stylesheet" href = /resources/css/jquery-ui.css type="text/css">
+<link rel="stylesheet" href = /resources/css/bootstrap-theme.min.css type="text/css">
+<link rel="stylesheet" href = /resources/css/bootstrap.min.css type="text/css">
 <script type="text/javascript">
 
 	$(document).ready(function(){
@@ -134,34 +136,13 @@
 
 </head>
 <body>
-
-	<input type="button" id="createlist" name="createList" value="글쓰기" onclick="createList()">
-	<input type="button" id="checkDelete" name="checkDelete" value="삭제" >
-	
-	<form id="frm_serch" name="frm_serch">
-	
-	<select id="combobox" name="combobox"  >
-		<option value="" >선택</option>
-		<option value="작성자" id="op1">작성자</option>
-		<option value="제목" id="op2">제목</option>
-		<option value="제목+내용" id="op3">제목+내용</option>
-	</select>
-	
-	<input type="text" id="serch_text" name="serch_text" value="${serch_text }" >
-	<input type="button" id="serch_btn" name="serch_btn" value="검색">
-	<input type="text" id="sdate" name="sdate" value="${sdate }">
-	<input type="text" id="edate" name="edate" value="${edate }">
-	
-	</form>
-
+	<div class="container">
 	<div id ="ajaxList">
-
-	<table border="1" bordercolor="black">
-
+	<table class="table table-striped" >
     <thead>
         <tr>
         	<th scope="col">선택<br>
-        		<input type="checkbox" id='chkall' name='chkall' > 
+        		<!-- <input type="checkbox" id='chkall' name='chkall' >  -->
         	</th>
             <th scope="col">글번호</th>
             <th scope="col">작성자(ID)</th>
@@ -197,21 +178,55 @@
     </tbody>
 </table>
 
-	<c:if test="${pageMaker.prev == true}">
-   <a href="/listAll?page=1" > &lt;&lt; </a>
-   <a href="/listAll?page=${pageMaker.startPage -pageMaker.cri.perPageNum }" > &lt; </a>
-   </c:if>
-   
-	<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" varStatus="status">
-		<a href="/listAll?page=${status.index}" > ${status.index} </a>
-	</c:forEach>
-	
-	<c:if test="${pageMaker.next == true}">
-	     <a href="/listAll?page=${pageMaker.startPage + pageMaker.cri.perPageNum }" > > </a>
-   		<a href="/listAll?page=${pageMaker.totalCount }" > >> </a>
-   </c:if>
+
 
 	
+	</div>
+	<div class="row">
+		<div class="col-md-2" >
+			<input type="button" class="btn btn-sm btn-primary" id="createlist" name="createList" value="글쓰기" onclick="createList()">
+			<input type="button" class="btn btn-sm btn-danger" id="checkDelete" name="checkDelete" value="삭제" >
+		</div>
+		<div class="col-md-1">
+			<c:if test="${pageMaker.prev == true}">
+		   <a href="/listAll?page=1" > &lt;&lt; </a>
+		   <a href="/listAll?page=${pageMaker.startPage -pageMaker.cri.perPageNum }" > &lt; </a>
+		   </c:if>
+		   
+			<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" varStatus="status">
+				<a href="/listAll?page=${status.index}" > ${status.index} </a>
+			</c:forEach>
+			
+			<c:if test="${pageMaker.next == true}">
+			     <a href="/listAll?page=${pageMaker.startPage + pageMaker.cri.perPageNum }" > > </a>
+		   		<a href="/listAll?page=${pageMaker.totalCount }" > >> </a>
+		    </c:if>
+		</div>
+		<div class="col-md-10">
+			<form id="frm_serch" name="frm_serch" class="form-inline">
+			<div class="form-group">
+			<select id="combobox" name="combobox" class="form-control input-sm" >
+				<option value="" >선택</option>
+				<option value="작성자" id="op1">작성자</option>
+				<option value="제목" id="op2">제목</option>
+				<option value="제목+내용" id="op3">제목+내용</option>
+			</select>
+			</div>
+			<div class="form-group">
+			<input type="text" class="form-control input-sm" id="serch_text" name="serch_text" value="${serch_text }" >
+			</div>
+			<div class="form-group">
+			<input type="button" class="btn btn-sm btn-info" id="serch_btn" name="serch_btn" value="검색">
+			</div>
+			<div class="form-group">
+			<input type="text" class="form-control input-sm" id="sdate" name="sdate" value="${sdate }">
+			</div>
+			<div class="form-group">
+			<input type="text" class="form-control input-sm" id="edate" name="edate" value="${edate }">
+			</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 </body>
